@@ -1,0 +1,32 @@
+{
+  "name": "riken",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "~1.2.20",
+    "angular-resource": "~1.2.20",
+    "angular-ui-router": "~0.2.10",
+    "angular-ui-bootstrap-bower": "~0.11.0",
+    "bootstrap": "~3.2.0",
+    "d3": "~3.4.10",
+    "three.js": "*",
+    "traceur-runtime": "~0.0.66"
+  },
+  "exportsOverride": {
+    "angular-ui-router": {
+      "js": "release/*.js"
+    },
+    "bootstrap": {
+      "js": "dist/js/*.js",
+      "css": "dist/css/*.css"
+    },
+    "jquery": {
+      "js": "dist/*.js",
+      "map": "dist/*.map"
+    },
+    "*": {
+      "js": "**/*.js",
+      "css": "**/*.css",
+      "map": "**/*.map"
+    }
+  }
+}
