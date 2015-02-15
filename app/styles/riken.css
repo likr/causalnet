@@ -1,0 +1,7 @@
+g.vertex, g.edge {
+  opacity: 0.5;
+}
+
+g.vertex.upper, g.vertex.lower, g.edge.upper, g.edge.lower {
+  opacity: 1;
+}
