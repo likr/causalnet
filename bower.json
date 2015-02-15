@@ -9,7 +9,9 @@
     "bootstrap": "~3.2.0",
     "d3": "~3.4.10",
     "three.js": "*",
-    "traceur-runtime": "~0.0.66"
+    "traceur-runtime": "~0.0.66",
+    "semjs": "git://github.com/likr/semjs.git",
+    "egrid-core": "git://github.com/likr/egrid-core.git#~1.2.1"
   },
   "exportsOverride": {
     "angular-ui-router": {
