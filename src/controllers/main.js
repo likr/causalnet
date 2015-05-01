@@ -1,7 +1,51 @@
+'use strict';
+
+import angular from 'angular';
+import d3 from 'd3';
+import sem from 'semjs';
+
+class MainController {
+  constructor(columns, data, interactive, rankDir, rmin) {
+    var values = columns.map(column => {
+      return data.map(d => d[column.name]);
+    });
+    var r = sem.stats.corrcoef(values);
+    var links = [];
+    var n = columns.length;
+    for (let i = 0; i < n; ++i) {
+      for (let j = i + 1; j < n; ++j) {
+        if (Math.abs(r[i][j]) >= rmin && columns[i].group !== columns[j].group) {
+          if (columns[i].groupOrder < columns[j].groupOrder) {
+            links.push({
+              source: i,
+              target: j,
+              r: r[i][j]
+            });
+          } else {
+            links.push({
+              source: j,
+              target: i,
+              r: r[i][j]
+            });
+          }
+        }
+      }
+    }
+
+    this.data = {
+      nodes: columns,
+      links: links
+    };
+    this.interactive = interactive;
+    this.rankDir = rankDir;
+  }
+}
+
 angular.module('riken')
   .config($stateProvider => {
     $stateProvider.state('main', {
-      controller: 'MainController as main',
+      controller: 'MainController',
+      controllerAs: 'main',
       resolve: {
         columns: ($q) => {
           var groups = {
@@ -39,44 +83,18 @@ angular.module('riken')
             });
           return deferred.promise;
         },
+        interactive: ($stateParams) => {
+          return !!$stateParams.interactive || false;
+        },
+        rankDir: ($stateParams) => {
+          return $stateParams['rank-dir'] || 'LR';
+        },
         rmin: ($stateParams) => {
           return +$stateParams.rmin || 0.5;
         }
       },
       templateUrl: 'partials/main.html',
-      url: '/?rmin'
+      url: '/?rmin&rank-dir&interactive'
     });
   })
-  .controller('MainController', class {
-    constructor(columns, data, rmin) {
-      var values = columns.map(column => {
-        return data.map(d => d[column.name]);
-      });
-      var r = sem.stats.corrcoef(values);
-      var links = [];
-      var n = columns.length;
-      for (let i = 0; i < n; ++i) {
-        for (let j = i + 1; j < n; ++j) {
-          if (Math.abs(r[i][j]) >= rmin && columns[i].group !== columns[j].group) {
-            if (columns[i].groupOrder < columns[j].groupOrder) {
-              links.push({
-                source: i,
-                target: j,
-                r: r[i][j]
-              });
-            } else {
-              links.push({
-                source: j,
-                target: i,
-                r: r[i][j]
-              });
-            }
-          }
-        }
-      }
-      this.data = {
-        nodes: columns,
-        links: links
-      };
-    }
-  });
+  .controller('MainController', MainController);
