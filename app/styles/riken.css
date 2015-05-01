@@ -1,7 +1,7 @@
-g.vertex, g.edge {
+g.vertex, g.edge>path {
   opacity: 0.5;
 }
 
-g.vertex.upper, g.vertex.lower, g.edge.upper, g.edge.lower {
+g.vertex.upper, g.vertex.lower, g.edge.upper>path, g.edge.lower>path {
   opacity: 1;
 }

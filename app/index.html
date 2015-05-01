@@ -4,11 +4,12 @@
 <meta charset="utf-8"/>
 <title>riken</title>
 <link rel="stylesheet" href="styles/lib/bootstrap.min.css"/>
+<link rel="stylesheet" href="styles/lib/d3-downloadable.css"/>
 <link rel="stylesheet" href="styles/riken.css"/>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-static-top">
-  <div class="container">
+  <div class="container-fluid">
     <div class="navbar-header">
       <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
         <span class="sr-only"></span>
@@ -22,16 +23,9 @@
     </div>
   </div>
 </nav>
-<div class="container">
+<div class="container-fluid">
   <div ui-view></div>
 </div>
-<script src="scripts/lib/traceur-runtime.min.js"></script>
-<script src="scripts/lib/jquery.min.js"></script>
-<script src="scripts/lib/bootstrap.min.js"></script>
-<script src="scripts/lib/angular.min.js"></script>
-<script src="scripts/lib/angular-ui-router.min.js"></script>
-<script src="scripts/lib/egrid-core.min.js"></script>
-<script src="scripts/lib/sem.js"></script>
 <script src="scripts/riken.js"></script>
 </body>
 </html>
