@@ -12,4 +12,5 @@ control {
   bottom: 10px;
   left: 10px;
   width: 200px;
+  overflow: scroll;
 }

@@ -6,11 +6,22 @@ import sem from 'semjs';
 import Graph from 'eg-graph/lib/graph';
 
 class MainController {
-  constructor(graph) {
+  constructor(columns, graph) {
     this.graph = graph;
     this.params = {
-      rMin: 0.5
+      rMin: 0.5,
+      layers: {},
+      groups: {}
     };
+
+    for (const column of columns) {
+      if (this.params.layers[column.group] === void 0) {
+        this.params.layers[column.group] = true;
+      }
+      if (this.params.groups[column.nameGroup] === void 0) {
+        this.params.groups[column.nameGroup] = true;
+      }
+    }
   }
 }
 
@@ -21,7 +32,8 @@ angular.module('riken')
       controllerAs: 'main',
       resolve: {
         columns: ($q) => {
-          var groups = {
+          const color = d3.scale.category20();
+          const groups = {
             '1 cell': 0,
             '1-2 cell': 1,
             '2 cell': 2,
@@ -30,10 +42,11 @@ angular.module('riken')
             '4 cell-8 cell': 5,
             '8 cell': 6
           };
-          var deferred = $q.defer();
+          const deferred = $q.defer();
           d3.csv('data/columns.csv')
             .row(d => {
               d.nameGroup = d.name.split('_')[0];
+              d.nameGroupColor = color(d.nameGroup);
               d.groupOrder = groups[d.group];
               return d;
             })
@@ -43,7 +56,7 @@ angular.module('riken')
           return deferred.promise;
         },
         data: ($q) => {
-          var deferred = $q.defer();
+          const deferred = $q.defer();
           d3.csv('data/data.csv')
             .row(d => {
               for (let key in d) {
