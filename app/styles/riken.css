@@ -2,6 +2,14 @@ network {
   position: absolute;
   top: 60px;
   bottom: 10px;
-  left: 10px;
+  left: 210px;
   right: 10px;
+}
+
+control {
+  position: absolute;
+  top: 60px;
+  bottom: 10px;
+  left: 10px;
+  width: 200px;
 }

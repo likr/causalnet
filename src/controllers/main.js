@@ -3,41 +3,14 @@
 import angular from 'angular';
 import d3 from 'd3';
 import sem from 'semjs';
+import Graph from 'eg-graph/lib/graph';
 
 class MainController {
-  constructor(columns, data, interactive, rankDir, rmin) {
-    var values = columns.map(column => {
-      return data.map(d => d[column.name]);
-    });
-    var r = sem.stats.corrcoef(values);
-    var links = [];
-    var n = columns.length;
-    for (let i = 0; i < n; ++i) {
-      for (let j = i + 1; j < n; ++j) {
-        if (Math.abs(r[i][j]) >= rmin && columns[i].group !== columns[j].group) {
-          if (columns[i].groupOrder < columns[j].groupOrder) {
-            links.push({
-              source: i,
-              target: j,
-              r: r[i][j]
-            });
-          } else {
-            links.push({
-              source: j,
-              target: i,
-              r: r[i][j]
-            });
-          }
-        }
-      }
-    }
-
-    this.data = {
-      nodes: columns,
-      links: links
+  constructor(graph) {
+    this.graph = graph;
+    this.params = {
+      rMin: 0.5
     };
-    this.interactive = interactive;
-    this.rankDir = rankDir;
   }
 }
 
@@ -82,6 +55,33 @@ angular.module('riken')
               deferred.resolve(data);
             });
           return deferred.promise;
+        },
+        graph: (columns, data) => {
+          const values = columns.map(column => {
+                  return data.map(d => d[column.name]);
+                }),
+                r = sem.stats.corrcoef(values),
+                n = columns.length;
+
+          const graph = new Graph();
+          for (const column of columns) {
+            graph.addVertex(column);
+          }
+          for (let i = 0; i < n; ++i) {
+            for (let j = 0; j < n; ++j) {
+              if (columns[i].groupOrder < columns[j].groupOrder) {
+                graph.addEdge(i, j, {
+                  r: r[i][j]
+                });
+              } else if (columns[j].groupOrder < columns[i].groupOrder) {
+                graph.addEdge(j, i, {
+                  r: r[j][i]
+                });
+              }
+            }
+          }
+
+          return graph;
         },
         interactive: ($stateParams) => {
           return !!$stateParams.interactive || false;

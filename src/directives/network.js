@@ -4,6 +4,7 @@ import angular from 'angular';
 import d3 from 'd3';
 import Graph from 'eg-graph/lib/graph';
 import Renderer from 'eg-graph/lib/renderer';
+import CircleVertexRenderer from 'eg-graph/lib/renderer/vertex-renderer/circle-vertex-renderer';
 
 class ConstantLayerAssignment {
   constructor(g) {
@@ -23,33 +24,26 @@ angular.module('riken')
   .directive('network', () => {
     return {
       link: (scope, element) => {
-        const data = scope.data;
+        const g = scope.graph;
+        const params = scope.params;
 
-        const g = new Graph();
-        data.nodes.forEach(node => {
-          node.participants = [];
-          g.addVertex(node);
-        });
-        data.links.forEach(link => {
-          g.addEdge(link.source, link.target, {
-            r: link.r
-          });
-        });
-
-        const centrality = (u) => g.inDegree(u) + g.outDegree(u);
+        const r = 10;
         const vertexColor = d3.scale.category20();
-        const vertexScale = d3.scale.linear()
-          .domain(d3.extent(g.vertices(), centrality))
-          .range([2, 10]);
-        const edgeWidthScale = d3.scale.linear()
-          .domain(d3.extent(g.edges(), ([u, v]) => Math.abs(g.edge(u, v).r)))
-          .range([3, 10]);
         const renderer = new Renderer()
-          .vertexVisibility(({u}) => centrality(u) > 0);
+          .vertexRenderer(new CircleVertexRenderer())
+          // .vertexVisibility(({u}) => {
+          //   if (g.inVertices(u).some((v) => g.edge(v, u).r > params.rMin)) {
+          //     return true;
+          //   }
+          //   if (g.outVertices(u).some((v) => g.edge(u, v).r > params.rMin)) {
+          //     return true;
+          //   }
+          //   return false;
+          // })
+          .edgeVisibility(({d}) => d.r > params.rMin);
         renderer.vertexRenderer()
           .vertexColor(({d}) => vertexColor(d.nameGroup))
-          .vertexScale(({u}) => vertexScale(centrality(u)))
-          .vertexText(({d}) => d.name);
+          .r(r);
         renderer.edgeRenderer()
           .edgeColor(({ud, vd}) => {
             if (ud.nameGroup === vd.nameGroup) {
@@ -57,25 +51,15 @@ angular.module('riken')
             } else {
               return 'black';
             }
-          });
+          })
+          .edgeOpacity(({d}) => Math.abs(d.r));
 
-        const sizes = renderer.vertexRenderer().calcSize(g);
         renderer.layouter()
           .layerAssignment(new ConstantLayerAssignment(g))
-          .layerMargin(2000)
-          .vertexWidth(({u}) => sizes[u].width)
-          .vertexHeight(({u}) => sizes[u].height)
-          .edgeWidth(({u, v}) => edgeWidthScale(Math.abs(g.edge(u, v).r)));
+          .layerMargin(1000)
+          .vertexWidth(() => r * 2)
+          .vertexHeight(() => r * 2);
 
-        // if (interactive) {
-        //   renderer
-        //     .vertexOpacity(() => '')
-        //     .edgeOpacity(() => '');
-        // } else {
-        //   renderer
-        //     .vertexOpacity(() => 1)
-        //     .edgeOpacity(() => 1);
-        // }
         const zoom = d3.behavior.zoom()
           .scaleExtent([0.05, 1])
           .on('zoom', () => {
@@ -90,14 +74,7 @@ angular.module('riken')
             height: element[0].clientHeight
           })
           .datum(g)
-          .call(renderer.render())
-          .call(zoom)
-          // .call(d3.downloadable({
-          //   filename: 'bio',
-          //   width: width,
-          //   height: height
-          // }))
-          ;
+          .call(zoom);
 
         d3.select(window)
           .on('resize', () => {
@@ -105,13 +82,21 @@ angular.module('riken')
               width: element[0].clientWidth,
               height: element[0].clientHeight
             });
-    });
+        });
+
+        const draw = () => {
+          svg.transition()
+            .delay(500)
+            .duration(500)
+            .call(renderer.render());
+        };
+
+        scope.$watch('params.rMin', draw);
       },
       restrict: 'E',
       scope: {
-        rankDir: '=',
-        interactive: '=',
-        data: '='
+        graph: '=',
+        params: '='
       }
     };
   });
