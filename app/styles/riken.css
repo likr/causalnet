@@ -1,7 +1,7 @@
-g.vertex, g.edge>path {
-  opacity: 0.5;
-}
-
-g.vertex.upper, g.vertex.lower, g.edge.upper>path, g.edge.lower>path {
-  opacity: 1;
+network {
+  position: absolute;
+  top: 60px;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
 }
