@@ -11,7 +11,8 @@ class MainController {
     this.params = {
       rMin: 0.5,
       layers: {},
-      groups: {}
+      groups: {},
+      showAll: true
     };
 
     for (const column of columns) {
