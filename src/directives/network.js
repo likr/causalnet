@@ -55,16 +55,20 @@ angular.module('riken')
             if (!params.groups[d.nameGroup] || !params.layers[d.group]) {
               return false;
             }
-            for (const v of g.inVertices(u)) {
-              const {nameGroup, group} = g.vertex(v);
-              if (params.groups[nameGroup] && params.layers[group] && g.edge(v, u).r >= params.rMin) {
-                return true;
+            if (params.showAll) {
+              return true;
+            } else {
+              for (const v of g.inVertices(u)) {
+                const {nameGroup, group} = g.vertex(v);
+                if (params.groups[nameGroup] && params.layers[group] && g.edge(v, u).r >= params.rMin) {
+                  return true;
+                }
               }
-            }
-            for (const v of g.outVertices(u)) {
-              const {nameGroup, group} = g.vertex(v);
-              if (params.groups[nameGroup] && params.layers[group] && g.edge(u, v).r >= params.rMin) {
-                return true;
+              for (const v of g.outVertices(u)) {
+                const {nameGroup, group} = g.vertex(v);
+                if (params.groups[nameGroup] && params.layers[group] && g.edge(u, v).r >= params.rMin) {
+                  return true;
+                }
               }
             }
             return false;
@@ -121,6 +125,7 @@ angular.module('riken')
         };
 
         scope.$watch('params.rMin', draw);
+        scope.$watch('params.showAll', draw);
         scope.$watchCollection('params.groups', draw);
         scope.$watchCollection('params.layers', draw);
       },
