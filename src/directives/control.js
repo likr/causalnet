@@ -10,8 +10,13 @@ angular.module('riken')
         const params = scope.params;
         scope.rmin = params.rMin;
 
+        const color = d3.scale.category20();
+        scope.groupColor = {};
+        for (const key in params.groups) {
+          scope.groupColor[key] = color(key);
+        }
+
         scope.updateRMin = () => {
-          console.log(scope);
           params.rMin = scope.rMin;
         };
 

@@ -4,3 +4,15 @@
     <input type="range" min="0" max="1" step="0.01" class="form-control rmin" ng-model="rmin">
   </div>
 </div>
+<div>
+  <h3>Groups</h3>
+  <div class="form-group" ng-repeat="(key, value) in params.groups">
+    <label ng-style="{color: groupColor[key]}">{{key}} <input type="checkbox" ng-model="params.groups[key]"></label>
+  </div>
+</div>
+<div>
+  <h3>Layers</h3>
+  <div class="form-group" ng-repeat="(key, value) in params.layers">
+    <label>{{key}} <input type="checkbox" ng-model="params.layers[key]"></label>
+  </div>
+</div>
