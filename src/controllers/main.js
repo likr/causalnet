@@ -96,19 +96,10 @@ angular.module('riken')
           }
 
           return graph;
-        },
-        interactive: ($stateParams) => {
-          return !!$stateParams.interactive || false;
-        },
-        rankDir: ($stateParams) => {
-          return $stateParams['rank-dir'] || 'LR';
-        },
-        rmin: ($stateParams) => {
-          return +$stateParams.rmin || 0.5;
         }
       },
       templateUrl: 'partials/main.html',
-      url: '/?rmin&rank-dir&interactive'
+      url: '/'
     });
   })
   .controller('MainController', MainController);

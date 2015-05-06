@@ -6,6 +6,15 @@ network {
   right: 10px;
 }
 
+network svg {
+  background-color: #eee;
+  cursor: move;
+}
+
+network svg g.vertex {
+  cursor: pointer;
+}
+
 control {
   position: absolute;
   top: 60px;
