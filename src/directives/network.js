@@ -8,6 +8,9 @@ import CircleVertexRenderer from 'eg-graph/lib/renderer/vertex-renderer/circle-v
 import vertexFunction from 'eg-graph/lib/renderer/vertex-function';
 import layerMatrix from 'eg-graph/lib/layouter/sugiyama/misc/layer-matrix';
 
+const edgeOpacity = 0.2;
+const vertexOpacity = 0.2;
+
 class ConstantLayerAssignment {
   constructor(g) {
     this.g = g;
@@ -56,7 +59,7 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
               cx: d => d.px,
               cy: d => d.py,
               r: r,
-              opacity: 0.5,
+              opacity: vertexOpacity,
               fill: vertexFunction(vertexColor)
             });
 
@@ -64,17 +67,19 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
             .text((d) => d.data.name)
             .attr({
               dx: r,
+              dy: -3,
               x: (d) => d.px,
               y: (d) => d.py,
-              fill: vertexFunction(vertexColor)
+              fill: vertexFunction(vertexColor),
+              'font-weight': 'bold'
             });
 
           element.on('click', (a, b, c) => {
             data.data.selected = !data.data.selected;
             d3.selectAll('g.vertex circle')
-              .attr('opacity', (d) => d.data.selected ? 1 : 0.5);
+              .attr('opacity', (d) => d.data.selected ? 1 : vertexOpacity);
             d3.selectAll('g.edge path')
-              .attr('opacity', (d) => d.source.data.selected || d.target.data.selected ? 1 : 0.4);
+              .attr('opacity', (d) => d.source.data.selected || d.target.data.selected ? 1 : edgeOpacity);
           });
         }
       });
@@ -84,7 +89,7 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
           cx: d => d.x,
           cy: d => d.y,
           r: r,
-          opacity: (d) => d.data.selected ? 1 : 0.5,
+          opacity: (d) => d.data.selected ? 1 : vertexOpacity,
           fill: vertexFunction(vertexColor)
         });
       selection.select('text')
@@ -176,10 +181,10 @@ angular.module('riken')
             if (ud.nameGroup === vd.nameGroup) {
               return ud.nameGroupColor;
             } else {
-              return '#ccc';
+              return '#888';
             }
           })
-          .edgeOpacity(({ud, vd}) => ud.selected || vd.selected ? 1 : 0.4);
+          .edgeOpacity(({ud, vd}) => ud.selected || vd.selected ? 1 : edgeOpacity);
 
         renderer.layouter()
           .layerAssignment(new ConstantLayerAssignment(g))
@@ -187,7 +192,8 @@ angular.module('riken')
           .vertexMargin(5)
           .edgeMargin(5)
           .vertexWidth(() => r * 2)
-          .vertexHeight(() => r * 2);
+          .vertexHeight(() => r * 2)
+          .edgeWidth(() => 3);
         renderer.layouter()
           .crossingReduction()
           .method(baryCenter);
