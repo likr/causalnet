@@ -222,17 +222,20 @@ angular.module('riken')
             });
         });
 
-        const draw = () => {
-          svg.transition()
-            .delay(500)
-            .duration(500)
-            .call(renderer.render());
+        const draw = (newValue, oldValue) => {
+          if (newValue !== oldValue) {
+            svg.transition()
+              .delay(500)
+              .duration(500)
+              .call(renderer.render());
+          }
         };
 
         scope.$watch('params.rMin', draw);
         scope.$watch('params.showAll', draw);
         scope.$watchCollection('params.groups', draw);
         scope.$watchCollection('params.layers', draw);
+        svg .call(renderer.render());
       },
       restrict: 'E',
       scope: {
