@@ -12,7 +12,8 @@ class MainController {
       rMin: 0.5,
       layers: {},
       groups: {},
-      showAll: true
+      showAll: true,
+      edgeConcentration: true
     };
 
     for (const column of columns) {
