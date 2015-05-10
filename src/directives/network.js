@@ -3,10 +3,12 @@
 import angular from 'angular';
 import d3 from 'd3';
 import Graph from 'eg-graph/lib/graph';
+import copy from 'eg-graph/lib/graph/copy';
 import Renderer from 'eg-graph/lib/renderer';
 import CircleVertexRenderer from 'eg-graph/lib/renderer/vertex-renderer/circle-vertex-renderer';
 import vertexFunction from 'eg-graph/lib/renderer/vertex-function';
 import layerMatrix from 'eg-graph/lib/layouter/sugiyama/misc/layer-matrix';
+import transformer from 'eg-graph/lib/transformer';
 
 const edgeOpacity = 0.2;
 const vertexOpacity = 0.2;
@@ -19,7 +21,9 @@ class ConstantLayerAssignment {
   call(gCopy) {
     let n = 0;
     for (const u of gCopy.vertices()) {
-      n = Math.max(n, this.g.vertex(u).groupOrder + 1);
+      if (this.g.vertex(u)) {
+        n = Math.max(n, this.g.vertex(u).groupOrder * 2 + 1);
+      }
     }
 
     const h = [];
@@ -27,8 +31,13 @@ class ConstantLayerAssignment {
       h.push([]);
     }
 
+    const f = (v) => this.g.vertex(v).groupOrder;
     for (const u of gCopy.vertices()) {
-      h[this.g.vertex(u).groupOrder].push(u);
+      if (this.g.vertex(u)) {
+        h[this.g.vertex(u).groupOrder * 2].push(u);
+      } else {
+        h[Math.min(...gCopy.outVertices(u).map(f)) * 2 - 1].push(u);
+      }
     }
 
     const layers = {};
@@ -148,8 +157,8 @@ angular.module('riken')
         const params = scope.params;
 
         const r = 10;
-        const renderer = new Renderer()
-          .vertexRenderer(new ExCircleVertexRenderer())
+        const layerAssignment = new ConstantLayerAssignment(g);
+        const coarseGrainingTransformer = new transformer.CoarseGrainingTransformer()
           .vertexVisibility(({u, d}) => {
             if (!params.groups[d.nameGroup] || !params.layers[d.group]) {
               return false;
@@ -173,6 +182,13 @@ angular.module('riken')
             return false;
           })
           .edgeVisibility(({d}) => d.r >= params.rMin);
+        const edgeConcentrationTransformer = new transformer.EdgeConcentrationTransformer()
+          .layerAssignment(layerAssignment)
+          .dummy(() => ({dummy: true, width: 0, height: 0, text: ''}));
+        const pipeTransformer = new transformer.PipeTransformer(coarseGrainingTransformer, edgeConcentrationTransformer);
+        const renderer = new Renderer()
+          .vertexRenderer(new ExCircleVertexRenderer())
+          .transformer(pipeTransformer);
         renderer.vertexRenderer()
           .vertexColor(({d}) => d.nameGroupColor)
           .r(r);
@@ -187,7 +203,7 @@ angular.module('riken')
           .edgeOpacity(({ud, vd}) => ud.selected || vd.selected ? 1 : edgeOpacity);
 
         renderer.layouter()
-          .layerAssignment(new ConstantLayerAssignment(g))
+          .layerAssignment(layerAssignment)
           .layerMargin(200)
           .vertexMargin(5)
           .edgeMargin(5)
@@ -224,6 +240,11 @@ angular.module('riken')
 
         const draw = (newValue, oldValue) => {
           if (newValue !== oldValue) {
+            if (params.edgeConcentration) {
+              renderer.transformer(pipeTransformer);
+            } else {
+              renderer.transformer(coarseGrainingTransformer);
+            }
             svg.transition()
               .delay(500)
               .duration(500)
@@ -233,9 +254,10 @@ angular.module('riken')
 
         scope.$watch('params.rMin', draw);
         scope.$watch('params.showAll', draw);
+        scope.$watch('params.edgeConcentration', draw);
         scope.$watchCollection('params.groups', draw);
         scope.$watchCollection('params.layers', draw);
-        svg .call(renderer.render());
+        svg.call(renderer.render());
       },
       restrict: 'E',
       scope: {
