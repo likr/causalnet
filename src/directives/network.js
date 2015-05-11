@@ -31,12 +31,11 @@ class ConstantLayerAssignment {
       h.push([]);
     }
 
-    const f = (v) => this.g.vertex(v).groupOrder;
     for (const u of gCopy.vertices()) {
       if (this.g.vertex(u)) {
         h[this.g.vertex(u).groupOrder * 2].push(u);
       } else {
-        h[Math.min(...gCopy.outVertices(u).map(f)) * 2 - 1].push(u);
+        h[this.g.vertex(gCopy.inVertices(u)[0]).groupOrder * 2 + 1].push(u);
       }
     }
 
