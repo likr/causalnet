@@ -157,6 +157,7 @@ angular.module('riken')
 
         const r = 10;
         const layerAssignment = new ConstantLayerAssignment(g);
+        const copyTransformer = new transformer.CopyTransformer();
         const coarseGrainingTransformer = new transformer.CoarseGrainingTransformer()
           .vertexVisibility(({u, d}) => {
             if (!params.groups[d.nameGroup] || !params.layers[d.group]) {
@@ -184,10 +185,16 @@ angular.module('riken')
         const edgeConcentrationTransformer = new transformer.EdgeConcentrationTransformer()
           .layerAssignment(layerAssignment)
           .dummy(() => ({dummy: true, width: 0, height: 0, text: ''}));
-        const pipeTransformer = new transformer.PipeTransformer(coarseGrainingTransformer, edgeConcentrationTransformer);
+        const pipeTransformer1 = new transformer.PipeTransformer(
+            copyTransformer,
+            coarseGrainingTransformer,
+            edgeConcentrationTransformer);
+        const pipeTransformer2 = new transformer.PipeTransformer(
+            copyTransformer,
+            coarseGrainingTransformer);
         const renderer = new Renderer()
           .vertexRenderer(new ExCircleVertexRenderer())
-          .transformer(pipeTransformer);
+          .transformer(pipeTransformer1);
         renderer.vertexRenderer()
           .vertexColor(({d}) => d.nameGroupColor)
           .r(r);
@@ -240,9 +247,9 @@ angular.module('riken')
         const draw = (newValue, oldValue) => {
           if (newValue !== oldValue) {
             if (params.edgeConcentration) {
-              renderer.transformer(pipeTransformer);
+              renderer.transformer(pipeTransformer1);
             } else {
-              renderer.transformer(coarseGrainingTransformer);
+              renderer.transformer(pipeTransformer2);
             }
             svg.transition()
               .delay(500)
