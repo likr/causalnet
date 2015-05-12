@@ -2,6 +2,7 @@
 
 import angular from 'angular';
 import d3 from 'd3';
+import downloadable from 'd3-downloadable';
 import Graph from 'eg-graph/lib/graph';
 import copy from 'eg-graph/lib/graph/copy';
 import Renderer from 'eg-graph/lib/renderer';
@@ -234,7 +235,8 @@ angular.module('riken')
             height: element[0].clientHeight
           })
           .datum(g)
-          .call(zoom);
+          .call(zoom)
+          .call(downloadable().filename('riken'));
 
         d3.select(window)
           .on('resize', () => {
