@@ -9,12 +9,12 @@
     "eg-graph": "*"
   },
   "scripts": {
-    "build": "broserify src/index.js -t babelify --outfile app/scripts/riken.js",
-    "watch": "watchify src/index.js -t babelify --outfile app/scripts/riken.js -v"
+    "build": "browserify src/main.js src/controllers/*.js src/directives/*.js -t babelify --outfile app/scripts/riken.js",
+    "watch": "watchify src/main.js src/controllers/*.js src/directives/*.js -t babelify --outfile app/scripts/riken.js -v"
   },
   "devDependencies": {
     "babelify": "^6.0.2",
-    "browserify": "^9.0.8",
+    "browserify": "^10.2.1",
     "watchify": "^3.2.0"
   }
 }
