@@ -12,7 +12,7 @@ import layerMatrix from 'eg-graph/lib/layouter/sugiyama/misc/layer-matrix';
 import transformer from 'eg-graph/lib/transformer';
 
 const edgeOpacity = 0.2;
-const vertexOpacity = 0.2;
+const vertexOpacity = 1;
 
 class ConstantLayerAssignment {
   constructor(g) {
@@ -63,10 +63,11 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
       selection.each(function (data) {
         const element = d3.select(this);
         if (element.select('circle').empty()) {
+          element
+            .attr('transform', d => `translate(${d.px},${d.py})`);
+
           element.append('circle')
             .attr({
-              cx: d => d.px,
-              cy: d => d.py,
               r: r,
               opacity: vertexOpacity,
               fill: vertexFunction(vertexColor)
@@ -75,11 +76,10 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
           element.append('text')
             .text((d) => d.data.name)
             .attr({
-              dx: r,
-              dy: -3,
-              x: (d) => d.px,
-              y: (d) => d.py,
+              dx: r / 2,
+              dy: r,
               fill: vertexFunction(vertexColor),
+              transform: 'rotate(30)',
               'font-weight': 'bold'
             });
 
@@ -93,19 +93,18 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
         }
       });
 
+      selection
+        .attr('transform', d => `translate(${d.x},${d.y})`);
       selection.select('circle')
         .attr({
-          cx: d => d.x,
-          cy: d => d.y,
           r: r,
           opacity: (d) => d.data.selected ? 1 : vertexOpacity,
           fill: vertexFunction(vertexColor)
         });
       selection.select('text')
         .attr({
-          dx: r,
-          x: (d) => d.x,
-          y: (d) => d.y,
+          dx: r / 2,
+          dy: r,
           fill: vertexFunction(vertexColor)
         });
     };
@@ -200,6 +199,7 @@ angular.module('riken')
           .vertexColor(({d}) => d.nameGroupColor)
           .r(r);
         renderer.edgeRenderer()
+          .ltor(false)
           .edgeColor(({ud, vd}) => {
             if (ud.nameGroup === vd.nameGroup) {
               return ud.nameGroupColor;
@@ -210,9 +210,10 @@ angular.module('riken')
           .edgeOpacity(({ud, vd}) => ud.selected || vd.selected ? 1 : edgeOpacity);
 
         renderer.layouter()
+          .ltor(false)
           .layerAssignment(layerAssignment)
-          .layerMargin(200)
-          .vertexMargin(5)
+          .layerMargin(10)
+          .vertexMargin(200)
           .edgeMargin(5)
           .vertexWidth(() => r * 2)
           .vertexHeight(() => r * 2)
