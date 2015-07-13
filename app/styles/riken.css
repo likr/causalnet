@@ -1,6 +1,6 @@
 network {
   position: absolute;
-  top: 120px;
+  top: 10px;
   bottom: 10px;
   left: 220px;
   right: 10px;
@@ -17,7 +17,7 @@ network svg g.vertex {
 
 control {
   position: absolute;
-  top: 60px;
+  top: 10px;
   bottom: 10px;
   left: 10px;
   width: 200px;
