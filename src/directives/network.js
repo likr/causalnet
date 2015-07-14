@@ -76,10 +76,11 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
           element.append('text')
             .text((d) => d.data.name)
             .attr({
-              dx: r,
+              dx: r * 1.5,
               dy: r,
               fill: vertexFunction(vertexColor),
               transform: 'rotate(30)',
+              'font-size': 20,
               'font-weight': 'bold'
             });
 
@@ -103,7 +104,7 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
         });
       selection.select('text')
         .attr({
-          dx: r,
+          dx: r * 1.5,
           dy: r,
           fill: vertexFunction(vertexColor)
         });
@@ -212,8 +213,8 @@ angular.module('riken')
         renderer.layouter()
           .ltor(false)
           .layerAssignment(layerAssignment)
-          .layerMargin(10)
-          .vertexMargin(200)
+          .layerMargin(20)
+          .vertexMargin(150)
           .edgeMargin(5)
           .vertexWidth(() => r * 2)
           .vertexHeight(() => r * 2)
@@ -267,6 +268,10 @@ angular.module('riken')
         scope.$watchCollection('params.groups', draw);
         scope.$watchCollection('params.layers', draw);
         svg.call(renderer.render());
+
+        scope.$on('update-graph', () => {
+          svg.call(renderer.render());
+        });
 
         d3.select('g.contents')
           .attr('transform', `translate(0,0)scale(0.4)`);
