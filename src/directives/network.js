@@ -76,7 +76,7 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
           element.append('text')
             .text((d) => d.data.name)
             .attr({
-              dx: r / 2,
+              dx: r,
               dy: r,
               fill: vertexFunction(vertexColor),
               transform: 'rotate(30)',
@@ -103,7 +103,7 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
         });
       selection.select('text')
         .attr({
-          dx: r / 2,
+          dx: r,
           dy: r,
           fill: vertexFunction(vertexColor)
         });
@@ -168,20 +168,20 @@ angular.module('riken')
             } else {
               for (const v of g.inVertices(u)) {
                 const {nameGroup, group} = g.vertex(v);
-                if (params.groups[nameGroup] && params.layers[group] && g.edge(v, u).r >= params.rMin) {
+                if (params.groups[nameGroup] && params.layers[group] && Math.abs(g.edge(v, u).r) >= params.rMin) {
                   return true;
                 }
               }
               for (const v of g.outVertices(u)) {
                 const {nameGroup, group} = g.vertex(v);
-                if (params.groups[nameGroup] && params.layers[group] && g.edge(u, v).r >= params.rMin) {
+                if (params.groups[nameGroup] && params.layers[group] && Math.abs(g.edge(u, v).r) >= params.rMin) {
                   return true;
                 }
               }
             }
             return false;
           })
-          .edgeVisibility(({d}) => d.r >= params.rMin);
+          .edgeVisibility(({d}) => Math.abs(d.r) >= params.rMin);
         const edgeConcentrationTransformer = new transformer.EdgeConcentrationTransformer()
           .layerAssignment(layerAssignment)
           .dummy(() => ({dummy: true, width: 0, height: 0, text: ''}));
@@ -267,6 +267,10 @@ angular.module('riken')
         scope.$watchCollection('params.groups', draw);
         scope.$watchCollection('params.layers', draw);
         svg.call(renderer.render());
+
+        d3.select('g.contents')
+          .attr('transform', `translate(0,0)scale(0.4)`);
+        zoom.translate([0, 0]).scale(0.4);
       },
       restrict: 'E',
       scope: {
