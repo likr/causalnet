@@ -56,7 +56,7 @@ def main():
                    'u': columns[namej].index, 'd': {'r': r[i][j]}}
                   for i, namei in enumerate(head)
                   for j, namej in enumerate(head)
-                  if i < j and columns[namei].group != columns[namej].group]
+                  if i < j]
     }
     json.dump(graph, open('data.json', 'w'))
 
