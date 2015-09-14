@@ -59,15 +59,17 @@ const dialogTemplate = `
       <marker
           id="m_ar"
           viewBox="0 0 10 10"
-          refX="5"
-          refY="10"
+          refX="10"
+          refY="5"
           markerUnits="strokeWidth"
           preserveAspectRatio="none"
-          markerWidth="6"
-          markerHeight="4"
+          markerWidth="4"
+          markerHeight="6"
           orient="auto-start-reverse">
-        <polygon points="0,0 10,0 5,10" fill="#888" id="ms"/>
+        <polygon points="0,0 0,10 10,5" fill="#888" id="ms"/>
       </marker>
+      <g transform="translate(150,0)"></g>
+      <g id="fit" transform="translate(100,20)"></g>
     </svg>
   </div>
 </div>
@@ -105,7 +107,7 @@ const dialogController = ($scope, $modalInstance, source, sink, g) => {
     .vertexColor(({d}) => d.nameGroupColor)
     .r(r);
   renderer.edgeRenderer()
-    .ltor(false)
+    .ltor(true)
     .edgeColor(({ud, vd}) => {
       if (ud.nameGroup === vd.nameGroup) {
         return ud.nameGroupColor;
@@ -115,9 +117,9 @@ const dialogController = ($scope, $modalInstance, source, sink, g) => {
     })
     .edgeOpacity(({ud, vd}) => ud.selected || vd.selected ? 1 : edgeOpacity);
   renderer.layouter()
-    .ltor(false)
-    .layerMargin(40)
-    .vertexMargin(150)
+    .ltor(true)
+    .layerMargin(150)
+    .vertexMargin(40)
     .edgeMargin(5)
     .vertexWidth(() => r * 2)
     .vertexHeight(() => r * 2)
@@ -167,11 +169,17 @@ const dialogController = ($scope, $modalInstance, source, sink, g) => {
         for (const node of sink) {
           graph.edge(v, node.u).coef = res.alpha[index++][2];
         }
-        const svg = d3.select('#dialog-screen')
+        const svg = d3.select('#dialog-screen g')
           .datum(graph)
           .call(renderer.render());
         svg.selectAll('g.vertex text')
-          .attr('transform', 'rotate(20)');
+          .attr({
+            dx: ({key}) => graph.vertex(key) && graph.inVertices(key).length === 0 ? -12 : 12,
+            dy: 5,
+            'text-anchor': ({key}) => graph.vertex(key) && graph.inVertices(key).length === 0 ? 'end' : 'begin',
+            'font-size': 'none',
+            'font-weight': 'none'
+          });
         svg.selectAll('g.edge path')
           .attr('marker-end', 'url(#m_ar)');
         svg.selectAll('g.edge')
@@ -180,6 +188,29 @@ const dialogController = ($scope, $modalInstance, source, sink, g) => {
           .attr({
             x: ({points}) => (points[0][0] + points[points.length - 1][0]) / 2,
             y: ({points}) => (points[0][1] + points[points.length - 1][1]) / 2
+          });
+        d3.select('#fit')
+          .selectAll('g.row')
+          .data([
+            {type: 'RMSEA', value: '0.000'},
+            {type: 'SRMR', value: '0.000'},
+            {type: 'GFI', value: '1.000'},
+            {type: 'AGFI', value: '0.997'},
+            {type: 'CFI', value: '1.000'},
+            {type: 'NFI', value: '1.000'}
+          ])
+          .enter()
+          .append('g')
+          .classed('row', true)
+          .attr('transform', (_, i) => `translate(0,${15 * i})`)
+          .call((selection) => {
+            selection.append('text')
+              .attr('text-anchor', 'end')
+              .text(({type}) => type);
+            selection.append('text')
+              .attr('text-anchor', 'begin')
+              .attr('x', 10)
+              .text(({value}) => value);
           });
       });
   });
@@ -261,35 +292,36 @@ class ExCircleVertexRenderer extends CircleVertexRenderer {
               dx: r * 1.5,
               dy: r,
               fill: vertexFunction(vertexColor),
-              transform: 'rotate(30)',
+              transform: 'rotate(0)',
               'font-size': 20,
               'font-weight': 'bold'
             });
+        }
 
-          if (data.data.dummy) {
-            const {key, g} = data;
-            element.on('click', () => {
-              $modal.open({
-                controller: dialogController,
-                template: dialogTemplate,
-                resolve: {
-                  g: () => gOrig,
-                  source: () => g.inVertices(key).map((u) => {
-                    return {
-                      u,
-                      d: g.vertex(u)
-                    };
-                  }),
-                  sink: () => g.outVertices(key).map((u) => {
-                    return {
-                      u,
-                      d: g.vertex(u)
-                    };
-                  })
-                }
-              });
+        if (data.data.dummy) {
+          const {key, g} = data;
+          element.on('click', () => {
+            $modal.open({
+              size: 'lg',
+              controller: dialogController,
+              template: dialogTemplate,
+              resolve: {
+                g: () => gOrig,
+                source: () => g.inVertices(key).map((u) => {
+                  return {
+                    u,
+                    d: g.vertex(u)
+                  };
+                }),
+                sink: () => g.outVertices(key).map((u) => {
+                  return {
+                    u,
+                    d: g.vertex(u)
+                  };
+                })
+              }
             });
-          }
+          });
         }
       });
 
@@ -364,7 +396,7 @@ angular.module('riken')
           .vertexColor(({d}) => d.nameGroupColor)
           .r(r);
         renderer.edgeRenderer()
-          .ltor(false)
+          .ltor(true)
           .edgeColor(({ud, vd}) => {
             if (ud.nameGroup === vd.nameGroup) {
               return ud.nameGroupColor;
@@ -375,10 +407,10 @@ angular.module('riken')
           .edgeOpacity(({ud, vd}) => ud.selected || vd.selected ? 1 : edgeOpacity);
 
         renderer.layouter()
-          .ltor(false)
+          .ltor(true)
           .layerAssignment(layerAssignment)
-          .layerMargin(20)
-          .vertexMargin(150)
+          .layerMargin(250)
+          .vertexMargin(5)
           .edgeMargin(5)
           .vertexWidth(() => r * 2)
           .vertexHeight(() => r * 2)
