@@ -1,5 +1,3 @@
-'use strict';
-
 import angular from 'angular';
 import d3 from 'd3';
 
@@ -73,6 +71,12 @@ angular.module('riken')
           console.log($event.currentTarget);
           $event.currentTarget.setAttribute('href', `data:application/json;charset=utf-8,${encodeURIComponent(graph.toString())}`);
           $event.currentTarget.setAttribute('download', 'graph.json');
+        };
+
+        $scope.sortedKeys = (obj) => {
+          const result = Object.keys(obj);
+          result.sort();
+          return result;
         };
       },
       link: (scope, element) => {

@@ -10,13 +10,13 @@
     "bootstrap": "^3.3.5",
     "d3": "^3.5.5",
     "d3-downloadable": "^0.1.1",
-    "d3-egraph": "0.0.1",
+    "d3-egraph": "0.0.2",
     "egraph": "^1.1.3",
     "semjs": "^0.2.2"
   },
   "scripts": {
-    "build": "browserify src/main.js src/controllers/*.js src/directives/*.js -t [ babelify --optional runtime ] --outfile app/scripts/riken.js",
-    "watch": "watchify src/main.js src/controllers/*.js src/directives/*.js -t [ babelify --optional runtime ] --outfile app/scripts/riken.js -v"
+    "build": "browserify src/main.js src/controllers/*.js src/directives/*.js src/services/*.js -t [ babelify --optional runtime ] --outfile app/scripts/riken.js",
+    "watch": "watchify src/main.js src/controllers/*.js src/directives/*.js src/services/*.js -t [ babelify --optional runtime ] --outfile app/scripts/riken.js -v"
   },
   "devDependencies": {
     "babelify": "^6.0.2",

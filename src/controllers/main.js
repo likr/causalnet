@@ -1,6 +1,6 @@
 import angular from 'angular';
 import d3 from 'd3';
-import Graph from 'eg-graph/lib/graph';
+import Graph from 'egraph/lib/graph';
 
 class MainController {
   constructor($scope, $modal) {
