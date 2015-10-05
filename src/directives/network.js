@@ -2,52 +2,15 @@ import angular from 'angular';
 import d3 from 'd3';
 import downloadable from 'd3-downloadable';
 import sem from 'semjs';
-import Graph from 'eg-graph/lib/graph';
-import Renderer from 'eg-graph/lib/renderer';
-import CircleVertexRenderer from 'eg-graph/lib/renderer/vertex-renderer/circle-vertex-renderer';
-import vertexFunction from 'eg-graph/lib/renderer/vertex-function';
-import layerMatrix from 'eg-graph/lib/layouter/sugiyama/misc/layer-matrix';
-import transformer from 'eg-graph/lib/transformer';
+import Graph from 'egraph/lib/graph';
+import transformer from 'egraph/lib/transformer';
+import Renderer from 'd3-egraph';
+import CircleVertexRenderer from 'd3-egraph/lib/vertex-renderer/circle-vertex-renderer';
+import vertexFunction from 'd3-egraph/lib/vertex-function';
 
 const edgeOpacity = 0.5;
 const vertexOpacity = 1;
 const r = 10;
-
-const baryCenter = (g, h1, h2, inverse=false) => {
-  const centers = {},
-        n = h1.length,
-        m = h2.length,
-        a = layerMatrix(g, h1, h2),
-        cmp = (u, v) => {
-          let d;
-          return (d = centers[u] - centers[v]) === 0 ? u - v : d;
-        };
-  if (inverse) {
-    for (let i = 0; i < n; ++i) {
-      let sum = 0,
-          count = 0;
-      for (let j = 0; j < m; ++j) {
-        const aij = a[i * m + j];
-        count += aij;
-        sum += j * aij;
-      }
-      centers[h1[i]] = count ? sum / count : Infinity;
-    }
-    h1.sort(cmp);
-  } else {
-    for (let j = 0; j < m; ++j) {
-      let sum = 0,
-          count = 0;
-      for (let i = 0; i < n; ++i) {
-        const aij = a[i * m + j];
-        count += aij;
-        sum += i * aij;
-      }
-      centers[h2[j]] = count ? sum / count : Infinity;
-    }
-    h2.sort(cmp);
-  }
-};
 
 const dialogTemplate = `
 <div class="modal-header">
@@ -124,9 +87,6 @@ const dialogController = ($scope, $modalInstance, source, sink, g) => {
     .vertexWidth(() => r * 2)
     .vertexHeight(() => r * 2)
     .edgeWidth(() => 3);
-  renderer.layouter()
-    .crossingReduction()
-    .method(baryCenter);
 
   const graph = new Graph();
   for (const {u, d} of source) {
@@ -161,7 +121,6 @@ const dialogController = ($scope, $modalInstance, source, sink, g) => {
     const solver = sem.solver();
     solver(source.length + sink.length + 1, alpha, sigma, S)
       .then(function(res) {
-        console.log(res);
         let index = 0;
         for (const node of source) {
           graph.edge(node.u, v).coef = res.alpha[index++][2];
@@ -247,13 +206,9 @@ class ConstantLayerAssignment {
     }
 
     const layers = {};
-    let index = 0;
     for (let i = 0; i < n; ++i) {
-      if (h[i].length > 0) {
-        for (const u of h[i]) {
-          layers[u] = index;
-        }
-        index += 1;
+      for (const u of h[i]) {
+        layers[u] = i;
       }
     }
 
@@ -415,9 +370,6 @@ angular.module('riken')
           .vertexWidth(() => r * 2)
           .vertexHeight(() => r * 2)
           .edgeWidth(() => 3);
-        renderer.layouter()
-          .crossingReduction()
-          .method(baryCenter);
 
         const zoom = d3.behavior.zoom()
           .scaleExtent([0.05, 1])
@@ -452,8 +404,8 @@ angular.module('riken')
               renderer.transformer(pipeTransformer2);
             }
             svg.transition()
-              .delay(500)
-              .duration(500)
+              .delay(1000)
+              .duration(800)
               .call(renderer.render());
           }
         };
