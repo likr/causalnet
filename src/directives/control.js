@@ -67,6 +67,13 @@ angular.module('riken')
               reader.readAsText(file);
             });
         };
+
+        $scope.exportGraph = ($event) => {
+          const graph = $scope.graph;
+          console.log($event.currentTarget);
+          $event.currentTarget.setAttribute('href', `data:application/json;charset=utf-8,${encodeURIComponent(graph.toString())}`);
+          $event.currentTarget.setAttribute('download', 'graph.json');
+        };
       },
       link: (scope, element) => {
         const params = scope.params;

@@ -1,8 +1,5 @@
-'use strict';
-
 import angular from 'angular';
 import d3 from 'd3';
-import sem from 'semjs';
 import Graph from 'eg-graph/lib/graph';
 
 class MainController {
