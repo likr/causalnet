@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+  - "4.1"
+install:
+  - npm install
+before_script:
+  - grunt build
+after_success:
+  - git clone https://github.com/likr/causalnet.git --branch=gh-pages tmp
+  - npm run build
+  - cp -R app/* tmp
+  - pushd tmp
+  - git add -A
+  - git commit -m 'update'
+  - '[ "$TRAVIS_BRANCH" == "master" ] && [ $GH_TOKEN ] && git push --quiet https://$GH_TOKEN@github.com/likr/causalnet.git gh-pages 2> /dev/null'
+  - popd
+env:
+  global:
+    - GIT_COMMITTER_NAME: 'Yosuke ONOUE'
+    - GIT_COMMITTER_EMAIL: 'onoue@likr-lab.com'
+    - GIT_AUTHOR_NAME: 'Yosuke ONOUE'
+    - GIT_AUTHOR_EMAIL: 'onoue@likr-lab.com'
+    - secure: "vpB8O2vD7wysdEoD1W0Bbo7UhuEead7heju7EJ8BLhuHjoyzhrNiF+PsaNgrURFwyty0h8mIvZUcUkGhVDuJecFGJmE9qgZAJMsnBQ5m/Nkt1XHSeP4AobrKOOJfyvL8u1gyq1ARUBETmF9rnuv21mdaEaJ+cTVRMSegieCco8Rmq5t/j/23pmEOCNv31Q9e5RaRqblalNocWVt+odMYA4eYQ96P8lKdjIiliMRbaHii9hpIqyrPsT9Hx1wgsLHpn0VgmadishBWjzXI50HFeHlNDPM1ZxuN8ve2BlKjcI0IfHcFTL/YVMylepUriYBylJB8TuNcgebTinPYHrO9qGd4eIihCyN0Eoja43tqXnFhcPe2T4Li/85S45RyGvQ9zhm7U9Vmxo45vDhhp9CteLeNyyDXw8aw4KFYQVwnC8QA59AFHoopKflKpQgejQzQK9UjSV51g9hr+QE/7O1m1tGrVXkfEXxymhqmDl1qV2d7RvA83EHd2jKd2J6gz768sTxdFF5W+4blqv0jTDrUMbwsZ8G/1DcuomnCHlr0FVcy/YJOWIlB3Z2M/xR/6gFfY7e1BXPzu7wUikMLF6MXKF/TDpC7QUu2D9bITVgSexxBrxacZLQHMZWw/amPbGSjzsYKnHgBAQFBnu79t/SotN2CyCKdbmdrY3tLlUQuNpk="
