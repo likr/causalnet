@@ -3,8 +3,6 @@ node_js:
   - "4.1"
 install:
   - npm install
-before_script:
-  - grunt build
 after_success:
   - git clone https://github.com/likr/causalnet.git --branch=gh-pages tmp
   - npm run build
