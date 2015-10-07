@@ -1,5 +1,5 @@
 {
-  "name": "riken",
+  "name": "causalnet",
   "version": "0.0.0",
   "dependencies": {
     "angular": "^1.3.15",
@@ -15,12 +15,17 @@
     "semjs": "^0.2.2"
   },
   "scripts": {
-    "build": "browserify src/main.js src/controllers/*.js src/directives/*.js src/services/*.js -t [ babelify --optional runtime ] --outfile app/scripts/riken.js",
-    "watch": "watchify src/main.js src/controllers/*.js src/directives/*.js src/services/*.js -t [ babelify --optional runtime ] --outfile app/scripts/riken.js -v"
+    "build": "browserify src/main.js src/controllers/*.js src/directives/*.js src/services/*.js -t [ babelify --optional runtime ] --outfile app/scripts/bundle.js",
+    "watch": "watchify src/main.js src/controllers/*.js src/directives/*.js src/services/*.js -t [ babelify --optional runtime ] --outfile app/scripts/bundle.js -v"
   },
   "devDependencies": {
     "babelify": "^6.0.2",
     "browserify": "^10.2.1",
     "watchify": "^3.2.0"
+  },
+  "license": "MIT",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/likr/causalnet.git"
   }
 }

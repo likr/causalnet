@@ -1,4 +1,4 @@
-app/scripts/riken.js
+app/scripts/bundle.js
 app/scripts/lib
 app/styles/lib
 bower_components
