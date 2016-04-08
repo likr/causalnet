@@ -1,13 +1,13 @@
 import Layouter from 'egraph/lib/layouter/sugiyama'
 import layerAssignment from '../utils/layer-assignment'
 
-const layout = (graph, {layerMargin, vertexMargin}) => {
+const layout = (graph) => {
   const layouter = new Layouter()
     .layerAssignment(layerAssignment(graph))
-    .layerMargin(layerMargin)
+    .layerMargin(80)
     .vertexWidth(() => 10)
     .vertexHeight(() => 10)
-    .vertexMargin(vertexMargin)
+    .vertexMargin(5)
     .edgeWidth(() => 2)
     .edgeMargin(1);
   const positions = layouter.layout(graph);

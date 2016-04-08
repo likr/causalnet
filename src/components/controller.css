@@ -1,0 +1,24 @@
+.controller {
+  width: 100%;
+  min-height: 100%;
+  color: #fff;
+  background-color: #008b86;
+}
+
+.controller>div {
+  padding: 1rem;
+}
+
+.controller input[type=file] {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.controller button:global(.pure-button) {
+  width: 100%;
+  background-color: #093799;
+}
+
+.controller input[type=range] {
+  width: 100%;
+}

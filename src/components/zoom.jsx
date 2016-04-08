@@ -9,7 +9,7 @@ const zoom = (Component) => {
       this.state = {
         x: 0,
         y: 0,
-        scale: 1
+        scale: 1,
       };
     }
 

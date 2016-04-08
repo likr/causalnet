@@ -1,32 +1,50 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {init, toggle} from '../actions/sem-actions'
+import d3 from 'd3'
 
-const selection = (state) => {
-  return {
-    semGraph: state.data.semGraph,
-    graph: state.data.filteredGraph,
-    allGraph: state.data.graph
-  };
-};
+class Vertex extends React.Component {
+  constructor(props) {
+    super(props);
+    const {x, y} = props;
+    this.state = {
+      x0: x,
+      y0: y,
+    };
+  }
 
-const Vertex = connect(selection)(class extends React.Component {
+  componentWillReceiveProps() {
+    const {x, y} = this.props;
+    this.setState({
+      x0: x,
+      y0: y,
+    });
+  }
+
+  componentDidMount() {
+    this.transition();
+  }
+
+  componentDidUpdate() {
+    this.transition();
+  }
+
   render() {
-    const {x, y, d} = this.props;
+    const {d} = this.props;
+    const {x0, y0} = this.state;
     const {name, color} = d;
     return (
       <g
-        transform={`translate(${x},${y})`}
-        onClick={::this.handleClick}
-        style={{cursor: 'pointer'}}>
+          ref="vertex"
+          transform={`translate(${x0},${y0})`}
+          onClick={::this.handleClick}
+          style={{cursor: 'pointer'}}>
         <circle
-          fill={color}
-          r={5}/>
+            fill={color}
+            r="5"/>
         <text
-          x={7}
-          y={5}
-          fill={color}
-          fontSize="10pt">
+            x="7"
+            y="5"
+            fill={color}
+            fontSize="10pt">
           {name}
         </text>
       </g>
@@ -34,13 +52,15 @@ const Vertex = connect(selection)(class extends React.Component {
   }
 
   handleClick() {
-    const {dispatch, graph, allGraph, semGraph, u, d} = this.props;
-    if (d.dummy) {
-      dispatch(init(graph, u, allGraph));
-    } else {
-      dispatch(toggle(semGraph, graph, u, allGraph));
-    }
   }
-});
+
+  transition() {
+    const {x, y} = this.props;
+    d3.select(this.refs.vertex)
+      .transition()
+      .duration(1000)
+      .attr('transform', `translate(${x},${y})`);
+  }
+}
 
 export default Vertex

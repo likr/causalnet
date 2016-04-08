@@ -1,44 +1,30 @@
-/* global FileReader */
-
 import React from 'react'
-import {connect} from 'react-redux'
-import RaisedButton from 'material-ui/lib/raised-button'
-import Paper from 'material-ui/lib/paper'
-import Slider from 'material-ui/lib/slider'
-import {loadData} from '../actions/data-actions'
+import {
+  loadDataFromFile,
+} from '../intents/data'
+import RThresholdSlider from './r-threshold-slider'
+import styles from './controller.css'
 
 class Controller extends React.Component {
   render() {
-    return (
-      <Paper
-        style={{
-          top: 20,
-          bottom: 20,
-          left: 20,
-          width: 300,
-          position: 'absolute',
-          padding: 10
-        }}>
+    const {variableTypes, layers, rThreshold} = this.props;
+    return <div className={styles.controller}>
+      <div>
+        <h1>CausalNet</h1>
         <div>
-          <div style={{marginBottom: 10}}>
+          <div>
             <input ref="file" type="file"/>
           </div>
-          <RaisedButton
-            style={{width: '100%'}}
-            onClick={::this.loadData}
-            label="load"/>
+          <button className="pure-button pure-button-primary" onClick={::this.handleClickLoadButton}>Load</button>
         </div>
         <div>
           <h3>R threshold</h3>
-          <Slider
-            name="rThreshold"
-            value={this.props.rThreshold}
-            step={0.01}/>
+          <RThresholdSlider value={rThreshold}/>
         </div>
         <div>
-          <h3>Groups</h3>
-          {this.props.groups.map(({name, color}, i) => (
-            <div key={i} class="checkbox">
+          <h3>Variable Types</h3>
+          {variableTypes.map(({name, color}, i) => (
+            <div key={i}>
               <label style={{color}}>
                 <input type="checkbox" checked/> {name}
               </label>
@@ -47,26 +33,21 @@ class Controller extends React.Component {
         </div>
         <div>
           <h3>Layers</h3>
-          {this.props.layers.map(({name}, i) => (
-            <div key={i} class="checkbox">
+          {layers.map(({name}, i) => (
+            <div key={i}>
               <label>
                 <input type="checkbox" checked/> {name}
               </label>
             </div>
           ))}
         </div>
-      </Paper>
-    );
+      </div>
+    </div>
   }
 
-  loadData() {
-    const file = this.refs.file.files[0]
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      this.props.dispatch(loadData(JSON.parse(event.target.result)));
-    };
-    reader.readAsText(file);
+  handleClickLoadButton() {
+    loadDataFromFile(this.refs.file.files[0]);
   }
 }
 
-export default connect((state) => ({rThreshold: state.data.rThreshold, groups: state.data.groups, layers: state.data.layers}))(Controller)
+export default Controller
