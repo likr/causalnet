@@ -5,9 +5,9 @@ const layerAssignment = (graph) => {
     .f((u) => {
       const d = graph.vertex(u);
       if (d.dummy) {
-        return Math.max(...graph.inVertices(u).map((v) => graph.vertex(v).groupOrder)) * 2 + 1;
+        return Math.max(...graph.inVertices(u).map((v) => graph.vertex(v).layerOrder)) * 2 + 1;
       } else {
-        return d.groupOrder * 2;
+        return d.layerOrder * 2;
       }
     });
 };

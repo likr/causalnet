@@ -1,5 +1,5 @@
 .networkDiagram {
-  background-color: #f3f9f9;
+  background-color: var(--background-color);
   cursor: move;
   display: block;
 }

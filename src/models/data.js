@@ -2,6 +2,8 @@ import d3 from 'd3'
 import Rx from 'rx'
 import {
   DATA_LOAD,
+  DATA_TOGGLE_LAYER,
+  DATA_TOGGLE_VARIABLE_TYPE,
   DATA_UPDATE_THRESHOLD,
 } from '../constants'
 import {intentSubject} from '../intents/data'
@@ -20,13 +22,29 @@ const state = {
   },
 };
 
-const filterGraph = (data, rThreshold) => {
-  const vertexMap = new Map(data.vertices.map(({u, d}) => [u, d]));
+const filterGraph = (data, rThreshold, variableTypes, layers) => {
+  const usedVariableTypes = new Set();
+  for (const variableType of variableTypes) {
+    if (variableType.checked) {
+      usedVariableTypes.add(variableType.name);
+    }
+  }
+  const usedLayers = new Set();
+  for (const layer of layers) {
+    if (layer.checked) {
+      usedLayers.add(layer.name);
+    }
+  }
+
+  const vertexMap = new Map(data.vertices
+                            .filter(({d}) => usedVariableTypes.has(d.variableType) && usedLayers.has(d.layer))
+                            .map(({u, d}) => [u, d]));
   const edges = data.edges.filter(({u, v, d}) => {
     const ud = vertexMap.get(u);
     const vd = vertexMap.get(v);
-    return ud.group !== vd.group && Math.abs(d.r) >= rThreshold
+    return ud && vd && ud.layer !== vd.layer && Math.abs(d.r) >= rThreshold
   });
+
   const usedVertices = new Set();
   for (const {u, v} of edges) {
     usedVertices.add(u);
@@ -41,8 +59,8 @@ const filterGraph = (data, rThreshold) => {
 };
 
 const updateLayout = () => {
-  const {rThreshold, variableTypes, layers} = state;
-  const graph = filterGraph(state.data, rThreshold);
+  const {data, rThreshold, variableTypes, layers} = state;
+  const graph = filterGraph(data, rThreshold, variableTypes, layers);
   layout(graph).subscribe(({vertices, edges}) => {
     state.layout.vertices = vertices;
     state.layout.edges = edges;
@@ -61,8 +79,33 @@ const updateLayout = () => {
 
 const load = (data) => {
   state.data = data;
-  state.variableTypes = data.variableTypes.map((name) => ({name, color: variableTypeColor(name)}));
-  state.layers = data.layers.map((name) => ({name}));
+  state.variableTypes = data.variableTypes.map((name) => ({
+    name,
+    color: variableTypeColor(name),
+    checked: true,
+  }));
+  state.layers = data.layers.map((name) => ({
+    name,
+    checked: true,
+  }));
+  updateLayout();
+};
+
+const toggleLayer = (name) => {
+  for (const layer of state.layers) {
+    if (layer.name === name) {
+      layer.checked = !layer.checked;
+    }
+  }
+  updateLayout();
+};
+
+const toggleVariableType = (name) => {
+  for (const variableType of state.variableTypes) {
+    if (variableType.name === name) {
+      variableType.checked = !variableType.checked;
+    }
+  }
   updateLayout();
 };
 
@@ -75,6 +118,12 @@ intentSubject.subscribe((payload) => {
   switch (payload.type) {
     case DATA_LOAD:
       load(payload.data);
+      break;
+    case DATA_TOGGLE_LAYER:
+      toggleLayer(payload.name);
+      break;
+    case DATA_TOGGLE_VARIABLE_TYPE:
+      toggleVariableType(payload.name);
       break;
     case DATA_UPDATE_THRESHOLD:
       updateRThreshold(payload.rThreshold);

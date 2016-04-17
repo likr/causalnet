@@ -3,6 +3,8 @@ import {
   loadDataFromFile,
 } from '../intents/data'
 import RThresholdSlider from './r-threshold-slider'
+import Layer from './layer'
+import VariableType from './variable-type'
 import styles from './controller.css'
 
 class Controller extends React.Component {
@@ -23,23 +25,11 @@ class Controller extends React.Component {
         </div>
         <div>
           <h3>Variable Types</h3>
-          {variableTypes.map(({name, color}, i) => (
-            <div key={i}>
-              <label style={{color}}>
-                <input type="checkbox" checked/> {name}
-              </label>
-            </div>
-          ))}
+          {variableTypes.map((d, i) => <VariableType key={i} {...d}/>)}
         </div>
         <div>
           <h3>Layers</h3>
-          {layers.map(({name}, i) => (
-            <div key={i}>
-              <label>
-                <input type="checkbox" checked/> {name}
-              </label>
-            </div>
-          ))}
+          {layers.map((d, i) => <Layer key={i} {...d}/>)}
         </div>
       </div>
     </div>
