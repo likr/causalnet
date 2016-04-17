@@ -2,6 +2,7 @@
 
 import Graph from 'egraph/lib/graph'
 import Layouter from 'egraph/lib/layouter/sugiyama'
+import EdgeConcentrationTransformer from 'egraph/lib/transformer/edge-concentration'
 import layerAssignment from '../utils/layer-assignment'
 
 const calcSize = (vertices) => {
@@ -19,8 +20,8 @@ const layout = (graph, {layerMargin, vertexMargin}) => {
   const layouter = new Layouter()
     .layerAssignment(layerAssignment(graph))
     .layerMargin(layerMargin)
-    .vertexWidth(() => 150)
-    .vertexHeight(() => 20)
+    .vertexWidth(({d}) => d.dummy ? 25 : 160)
+    .vertexHeight(({d}) => d.dummy ? 10 : 20)
     .vertexMargin(vertexMargin)
     .edgeWidth(() => 3)
     .edgeMargin(3);
@@ -59,5 +60,17 @@ onmessage = ({data}) => {
   for (const {u, v, d} of edges) {
     graph.addEdge(u, v, d);
   }
-  postMessage(layout(graph, options));
+
+  const transformer = new EdgeConcentrationTransformer()
+    .layerAssignment(layerAssignment(graph))
+    .idGenerator((graph) => Math.max(...graph.vertices()) + 1)
+    .dummy(() => ({
+      dummy: true,
+      width: 0,
+      height: 0,
+      name: '',
+      color: '#888',
+    }));
+
+  postMessage(layout(transformer.transform(graph), options));
 };
