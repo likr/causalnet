@@ -33,7 +33,7 @@ class Edge extends React.Component {
         <path
           d={svgPath(points0)}
           fill="none"
-          opacity="0.7"
+          opacity="0.3"
           stroke="#000"
           strokeWidth="2"/>
       </g>

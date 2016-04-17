@@ -1,5 +1,6 @@
 import React from 'react'
 import d3 from 'd3'
+import TextImage from './text-image'
 
 class Vertex extends React.Component {
   constructor(props) {
@@ -37,16 +38,19 @@ class Vertex extends React.Component {
           transform={`translate(${x0},${y0})`}
           onClick={::this.handleClick}
           style={{cursor: 'pointer'}}>
-        <circle
-            fill={color}
-            r="5"/>
-        <text
-            x="7"
-            y="5"
-            fill={color}
-            fontSize="10pt">
-          {name}
-        </text>
+        <rect
+            fill="none"
+            stroke={color}
+            strokeWidth="2"
+            width="150"
+            height="20"
+            x="-75"
+            y="-10"
+            rx="5"/>
+        <TextImage
+            text={name}
+            fontSize="10"
+            fill={color}/>
       </g>
     );
   }

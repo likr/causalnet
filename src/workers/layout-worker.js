@@ -19,11 +19,11 @@ const layout = (graph, {layerMargin, vertexMargin}) => {
   const layouter = new Layouter()
     .layerAssignment(layerAssignment(graph))
     .layerMargin(layerMargin)
-    .vertexWidth(() => 10)
-    .vertexHeight(() => 10)
+    .vertexWidth(() => 150)
+    .vertexHeight(() => 20)
     .vertexMargin(vertexMargin)
-    .edgeWidth(() => 2)
-    .edgeMargin(1);
+    .edgeWidth(() => 3)
+    .edgeMargin(3);
   const positions = layouter.layout(graph);
 
   const vertices = [];
