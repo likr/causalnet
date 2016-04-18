@@ -2,7 +2,9 @@
 
 import Rx from 'rx'
 import {
+  DATA_ADD_VARIABLE,
   DATA_LOAD,
+  DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
@@ -11,7 +13,11 @@ import {
 
 export const intentSubject = new Rx.Subject()
 
-export const toggleVertex = () => {
+export const addVariable = (u) => {
+  intentSubject.onNext({
+    type: DATA_ADD_VARIABLE,
+    u,
+  });
 };
 
 export const loadDataFromFile = (file) => {
@@ -23,6 +29,13 @@ export const loadDataFromFile = (file) => {
     });
   };
   reader.readAsText(file);
+};
+
+export const removeVariable = (u) => {
+  intentSubject.onNext({
+    type: DATA_REMOVE_VARIABLE,
+    u,
+  });
 };
 
 export const setModel = (U, L) => {

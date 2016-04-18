@@ -1,4 +1,5 @@
 import React from 'react'
+import {removeVariable} from '../intents/data'
 import TextImage from './text-image'
 
 class SemVertex extends React.Component {
@@ -23,6 +24,7 @@ class SemVertex extends React.Component {
     return <g
         ref="vertex"
         transform={`translate(${x},${y})`}
+        onClick={::this.handleClick}
         style={{cursor: 'pointer'}}>
       <rect
           fill="none"
@@ -38,6 +40,10 @@ class SemVertex extends React.Component {
           fontSize="10"
           fill={color}/>
     </g>
+  }
+
+  handleClick() {
+    removeVariable(this.props.u);
   }
 }
 

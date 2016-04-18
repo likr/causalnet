@@ -1,6 +1,9 @@
 import React from 'react'
 import d3 from 'd3'
-import {setModel} from '../intents/data'
+import {
+  addVariable,
+  setModel,
+} from '../intents/data'
 import TextImage from './text-image'
 
 class Vertex extends React.Component {
@@ -71,6 +74,7 @@ class Vertex extends React.Component {
   }
 
   handleClickVariable() {
+    addVariable(this.props.u);
   }
 
   handleClickBundle() {

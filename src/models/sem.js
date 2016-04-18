@@ -4,7 +4,7 @@ import Rx from 'rx'
 
 const sem = (n, alpha, sigma, S, alphaFixed, sigmaFixed) => {
   return Rx.Observable.create((observer) => {
-    const request = fetch('http://localhost:5000/sem', {
+    const request = fetch('https://websem.herokuapp.com/sem', {
       method: 'post',
       headers: {
         'content-type': 'application/json',

@@ -1,7 +1,9 @@
 import d3 from 'd3'
 import Rx from 'rx'
 import {
+  DATA_ADD_VARIABLE,
   DATA_LOAD,
+  DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
@@ -23,6 +25,8 @@ const state = {
   semVertices: [],
   semEdges: [],
   semAttributes: [],
+  U: [],
+  L: [],
 };
 
 const filterGraph = (data, rThreshold, variableTypes, layers) => {
@@ -155,6 +159,22 @@ const calcSem = (U, L) => {
   });
 };
 
+const addVariable = (u) => {
+  const {U, L} = state;
+  const vertexMap = new Map(state.data.vertices.map(({u, d}) => [u, d]));
+  const UOrder = U.length ? vertexMap.get(U[0]).layerOrder : 0;
+  if (vertexMap.get(u).layerOrder <= UOrder) {
+    if (U.indexOf(u) === -1) {
+      U.push(u);
+    }
+  } else {
+    if (L.indexOf(u) === -1) {
+      L.push(u);
+    }
+  }
+  calcSem(U, L);
+};
+
 const load = (data) => {
   state.data = data;
   state.variableTypes = data.variableTypes.map((name) => ({
@@ -169,7 +189,15 @@ const load = (data) => {
   updateLayout();
 };
 
+const removeVariable = (u) => {
+  state.U = state.U.filter((v) => u !== v);
+  state.L = state.L.filter((v) => u !== v);
+  calcSem(state.U, state.L);
+};
+
 const setModel = (U, L) => {
+  state.U = Array.from(U);
+  state.L = Array.from(L);
   calcSem(U, L);
 };
 
@@ -198,8 +226,14 @@ const updateRThreshold = (rThreshold) => {
 
 intentSubject.subscribe((payload) => {
   switch (payload.type) {
+    case DATA_ADD_VARIABLE:
+      addVariable(payload.u);
+      break;
     case DATA_LOAD:
       load(payload.data);
+      break;
+    case DATA_REMOVE_VARIABLE:
+      removeVariable(payload.u);
       break;
     case DATA_SET_MODEL:
       setModel(payload.U, payload.L);
