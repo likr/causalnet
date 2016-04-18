@@ -2,7 +2,7 @@
 
 import Rx from 'rx'
 
-const layout = ({vertices, edges}) => {
+const layout = ({vertices, edges}, edgeConcentration=false) => {
   return Rx.Observable.create((observer) => {
     const worker = new Worker('layout-worker.js');
     worker.onmessage = ({data}) => {
@@ -14,6 +14,7 @@ const layout = ({vertices, edges}) => {
       vertices,
       edges,
       options: {
+        edgeConcentration,
         layerMargin: 80,
         vertexMargin: 5,
       },

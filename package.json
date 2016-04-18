@@ -6,8 +6,7 @@
     "egraph": "^1.2.0",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
-    "rx": "^4.1.0",
-    "semjs": "^0.2.2"
+    "rx": "^4.1.0"
   },
   "scripts": {
     "start": "webpack-dev-server --content-base app",

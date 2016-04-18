@@ -2,12 +2,14 @@ import d3 from 'd3'
 import Rx from 'rx'
 import {
   DATA_LOAD,
+  DATA_SET_MODEL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
   DATA_UPDATE_THRESHOLD,
 } from '../constants'
 import {intentSubject} from '../intents/data'
 import layout from './layout'
+import sem from './sem'
 
 const variableTypeColor = d3.scale.category20();
 
@@ -16,10 +18,11 @@ const state = {
   rThreshold: 0.6,
   layers: [],
   variableTypes: [],
-  layout: {
-    vertices: [],
-    edges: [],
-  },
+  vertices: [],
+  edges: [],
+  semVertices: [],
+  semEdges: [],
+  semAttributes: [],
 };
 
 const filterGraph = (data, rThreshold, variableTypes, layers) => {
@@ -51,29 +54,104 @@ const filterGraph = (data, rThreshold, variableTypes, layers) => {
     usedVertices.add(v);
   }
   const vertices = data.vertices.filter(({u}) => usedVertices.has(u));
-  const types = new Set();
-  for (const {d} of data.vertices) {
-    types.add(d.variableType);
-  }
   return {vertices, edges};
 };
 
 const updateLayout = () => {
   const {data, rThreshold, variableTypes, layers} = state;
   const graph = filterGraph(data, rThreshold, variableTypes, layers);
-  layout(graph).subscribe(({vertices, edges}) => {
-    state.layout.vertices = vertices;
-    state.layout.edges = edges;
-    for (const vertex of state.layout.vertices) {
+  layout(graph, true).subscribe(({vertices, edges}) => {
+    for (const vertex of vertices) {
       vertex.d.color = variableTypeColor(vertex.d.variableType);
     }
-    subject.onNext({
+    subject.onNext(Object.assign(state, {
       vertices,
       edges,
-      variableTypes,
-      layers,
-      rThreshold,
-    })
+    }))
+  });
+};
+
+const updateSemLayout = (U, L, paths) => {
+  const vertexMap = new Map(state.data.vertices.map(({u, d}) => [u, d]));
+  const graph = {
+    vertices: [],
+    edges: [],
+  };
+  const w = -1;
+  graph.vertices.push({u: w, d: {
+    u: w,
+    dummy: true,
+  }});
+  for (const u of U) {
+    graph.vertices.push({u, d: Object.assign({}, vertexMap.get(u), {
+      layerOrder: 0,
+    })});
+    graph.edges.push({u, v: w, d: {
+      path: paths.get(u),
+    }});
+  }
+  for (const u of L) {
+    graph.vertices.push({u, d: Object.assign({}, vertexMap.get(u), {
+      layerOrder: 1,
+    })});
+    graph.edges.push({u: w, v: u, d: {
+      path: paths.get(u),
+    }});
+  }
+
+  layout(graph).subscribe(({vertices, edges}) => {
+    for (const vertex of vertices) {
+      vertex.d.color = variableTypeColor(vertex.d.variableType);
+    }
+    subject.onNext(Object.assign(state, {
+      semVertices: vertices,
+      semEdges: edges,
+    }))
+  });
+};
+
+const calcSem = (U, L) => {
+  const variables = U.concat(L);
+
+  const n = U.length + L.length + 1;
+  const w = n - 1;
+  const alpha = [];
+  const sigma = [];
+  const S = variables.map(() => new Array(variables.length));
+  const alphaFixed = [];
+  const sigmaFixed = [];
+
+  const variableSet = new Set(variables);
+  const edges = state.data.edges.filter(({u, v}) => variableSet.has(u) && variableSet.has(v));
+  const correlation = new Map(edges.map(({u, v, d}) => [`${u}:${v}`, d.r]));
+
+  for (let i = 0; i < U.length; ++i) {
+    alpha.push([i, w]);
+    sigmaFixed.push([i, i, 1])
+    for (let j = i + 1; j < U.length; ++j) {
+      sigma.push([i, j]);
+    }
+  }
+  alphaFixed.push([w, U.length, 1])
+  sigma.push([U.length, U.length]);
+  for (let i = 1; i < L.length; ++i) {
+    alpha.push([w, i + U.length]);
+    sigma.push([i + U.length, i + U.length]);
+  }
+
+  for (let i = 0; i < variables.length; ++i) {
+    const u = variables[i];
+    for (let j = i + 1; j < variables.length; ++j) {
+      const v = variables[j];
+      S[j][i] = S[i][j] = correlation.get(`${u}:${v}`) || correlation.get(`${v}:${u}`);
+    }
+    S[i][i] = 1;
+  }
+
+  sem(n, alpha, sigma, S, alphaFixed, sigmaFixed).subscribe((result) => {
+    const paths = new Map(result.alpha.map(([i, j, v]) => i === w ? [L[j - U.length], v] : [U[i], v]));
+    state.semAttributes = result.attributes;
+    updateSemLayout(U, L, paths);
   });
 };
 
@@ -89,6 +167,10 @@ const load = (data) => {
     checked: true,
   }));
   updateLayout();
+};
+
+const setModel = (U, L) => {
+  calcSem(U, L);
 };
 
 const toggleLayer = (name) => {
@@ -118,6 +200,9 @@ intentSubject.subscribe((payload) => {
   switch (payload.type) {
     case DATA_LOAD:
       load(payload.data);
+      break;
+    case DATA_SET_MODEL:
+      setModel(payload.U, payload.L);
       break;
     case DATA_TOGGLE_LAYER:
       toggleLayer(payload.name);

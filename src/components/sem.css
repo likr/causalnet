@@ -1,0 +1,21 @@
+.sem {
+  color: #fff;
+  background-color: var(--main-color);
+}
+
+.sem>:global(.pure-g)>div>div {
+  padding: 1rem;
+}
+
+.sem .semNetwork {
+  background-color: var(--background-color);
+  display: block;
+  width: 100%;
+  height: calc(200px - 2rem);
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+td, th {
+  border: solid 1px;
+  padding: 1rem;
+}

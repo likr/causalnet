@@ -30,6 +30,10 @@ const layout = (graph, {layerMargin, vertexMargin}) => {
   const vertices = [];
   for (const u of graph.vertices()) {
     const d = graph.vertex(u);
+    if (d.dummy) {
+      d.U = graph.inVertices(u);
+      d.L = graph.outVertices(u);
+    }
     const {x, y, width, height} = positions.vertices[u];
     vertices.push({u, d, x, y, width, height});
   }
@@ -61,16 +65,19 @@ onmessage = ({data}) => {
     graph.addEdge(u, v, d);
   }
 
-  const transformer = new EdgeConcentrationTransformer()
-    .layerAssignment(layerAssignment(graph))
-    .idGenerator((graph) => Math.max(...graph.vertices()) + 1)
-    .dummy(() => ({
-      dummy: true,
-      width: 0,
-      height: 0,
-      name: '',
-      color: '#888',
-    }));
+  if (options.edgeConcentration) {
+    const transformer = new EdgeConcentrationTransformer()
+      .layerAssignment(layerAssignment(graph))
+      .idGenerator((graph) => Math.max(...graph.vertices()) + 1)
+      .dummy(() => ({
+        dummy: true,
+        width: 0,
+        height: 0,
+        name: '',
+        color: '#888',
+      }));
+    postMessage(layout(transformer.transform(graph), options));
+  }
 
-  postMessage(layout(transformer.transform(graph), options));
+  postMessage(layout(graph, options));
 };

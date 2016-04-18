@@ -1,5 +1,6 @@
 import React from 'react'
 import d3 from 'd3'
+import {setModel} from '../intents/data'
 import TextImage from './text-image'
 
 class Vertex extends React.Component {
@@ -36,7 +37,7 @@ class Vertex extends React.Component {
       return <g
           ref="vertex"
           transform={`translate(${x0},${y0})`}
-          onClick={::this.handleClick}
+          onClick={::this.handleClickBundle}
           style={{cursor: 'pointer'}}>
         <rect
             fill="#000"
@@ -51,7 +52,7 @@ class Vertex extends React.Component {
     return <g
         ref="vertex"
         transform={`translate(${x0},${y0})`}
-        onClick={::this.handleClick}
+        onClick={::this.handleClickVariable}
         style={{cursor: 'pointer'}}>
       <rect
           fill="none"
@@ -69,7 +70,12 @@ class Vertex extends React.Component {
     </g>
   }
 
-  handleClick() {
+  handleClickVariable() {
+  }
+
+  handleClickBundle() {
+    const {U, L} = this.props.d;
+    setModel(U, L);
   }
 
   transition() {

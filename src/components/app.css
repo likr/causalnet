@@ -8,6 +8,14 @@
   overflow-y: scroll;
 }
 
+.semWrapper {
+  position: absolute;
+  left: 300px;
+  right: 0;
+  bottom: 0;
+  height: 200px;
+}
+
 .networkDiagramWrapper {
   position: absolute;
   left: 300px;

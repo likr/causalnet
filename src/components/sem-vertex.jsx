@@ -1,45 +1,44 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {toggle} from '../actions/sem-actions'
+import TextImage from './text-image'
 
-const selection = (state) => {
-  const {semGraph, filteredGraph, graph} = state.data;
-  return {
-    semGraph,
-    graph: filteredGraph,
-    allGraph: graph
-  };
-};
-
-const Vertex = connect(selection)(class extends React.Component {
+class SemVertex extends React.Component {
   render() {
-    const {u, x, y, d} = this.props;
-    const {name, color} = d;
-    const right = this.props.graph.outDegree(u) === 0;
-    return (
-      <g
-        onClick={::this.handleClick}
+    const {d, x, y, width, height} = this.props;
+    const {name, color, dummy} = d;
+    if (dummy) {
+      return <g
+          ref="vertex"
+          transform={`translate(${x},${y})`}
+          style={{cursor: 'pointer'}}>
+        <rect
+            fill="#000"
+            opacity="0.7"
+            width={width}
+            height={height}
+            x={-width / 2}
+            y={-height / 2}
+            rx="2"/>
+      </g>
+    }
+    return <g
+        ref="vertex"
         transform={`translate(${x},${y})`}
         style={{cursor: 'pointer'}}>
-        <circle
-          fill={color}
-          r={5}/>
-        <text
-          x={right ? 7 : -7}
-          y={5}
-          textAnchor={right ? 'start' : 'end'}
-          fill={color}
-          fontSize="10pt">
-          {name}
-        </text>
-      </g>
-    );
+      <rect
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          width={width}
+          height={height}
+          x={-width / 2}
+          y={-height / 2}
+          rx="5"/>
+      <TextImage
+          text={name}
+          fontSize="10"
+          fill={color}/>
+    </g>
   }
+}
 
-  handleClick() {
-    const {semGraph, graph, allGraph, u} = this.props;
-    this.props.dispatch(toggle(semGraph, graph, u, allGraph));
-  }
-});
-
-export default Vertex
+export default SemVertex
