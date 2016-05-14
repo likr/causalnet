@@ -1,8 +1,8 @@
 /* eslint-env worker */
 
-import Graph from 'egraph/lib/graph'
-import Layouter from 'egraph/lib/layouter/sugiyama'
-import EdgeConcentrationTransformer from 'egraph/lib/transformer/edge-concentration'
+import Graph from 'egraph/graph'
+import Layouter from 'egraph/layouter/sugiyama'
+import EdgeConcentrationTransformer from 'egraph/transformer/edge-concentration'
 import layerAssignment from '../utils/layer-assignment'
 
 const calcSize = (vertices) => {

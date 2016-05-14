@@ -1,4 +1,4 @@
-import LayerAssignment from 'egraph/lib/layouter/sugiyama/layer-assignment/user-defined';
+import LayerAssignment from 'egraph/layouter/sugiyama/layer-assignment/user-defined';
 
 const layerAssignment = (graph) => {
   return new LayerAssignment()
