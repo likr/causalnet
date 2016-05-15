@@ -1,6 +1,13 @@
 import d3 from 'd3'
 import Rx from 'rx'
-import { DATA_ADD_VARIABLE, DATA_LOAD, DATA_REMOVE_VARIABLE, DATA_SET_MODEL, DATA_TOGGLE_LAYER, DATA_TOGGLE_VARIABLE_TYPE, DATA_UPDATE_THRESHOLD,
+import {
+  DATA_ADD_VARIABLE,
+  DATA_LOAD,
+  DATA_REMOVE_VARIABLE,
+  DATA_SET_MODEL,
+  DATA_TOGGLE_LAYER,
+  DATA_TOGGLE_VARIABLE_TYPE,
+  DATA_UPDATE_THRESHOLD
 } from '../constants'
 import { intentSubject } from '../intents/data'
 import layout from './layout'
@@ -19,7 +26,7 @@ const state = {
   semEdges: [],
   semAttributes: [],
   U: [],
-  L: [],
+  L: []
 }
 
 const filterGraph = (data, rThreshold, variableTypes, layers) => {
@@ -63,7 +70,7 @@ const updateLayout = () => {
     }
     subject.onNext(Object.assign(state, {
       vertices,
-      edges,
+      edges
     }))
   })
 }
@@ -72,27 +79,27 @@ const updateSemLayout = (U, L, paths) => {
   const vertexMap = new Map(state.data.vertices.map(({u, d}) => [u, d]))
   const graph = {
     vertices: [],
-    edges: [],
+    edges: []
   }
   const w = -1
   graph.vertices.push({u: w, d: {
-      u: w,
-      dummy: true,
+    u: w,
+    dummy: true
   }})
   for (const u of U) {
     graph.vertices.push({u, d: Object.assign({}, vertexMap.get(u), {
-        layerOrder: 0,
+      layerOrder: 0
     })})
     graph.edges.push({u, v: w, d: {
-        path: paths.get(u),
+      path: paths.get(u)
     }})
   }
   for (const u of L) {
     graph.vertices.push({u, d: Object.assign({}, vertexMap.get(u), {
-        layerOrder: 1,
+      layerOrder: 1
     })})
     graph.edges.push({u: w, v: u, d: {
-        path: paths.get(u),
+      path: paths.get(u)
     }})
   }
 
@@ -102,7 +109,7 @@ const updateSemLayout = (U, L, paths) => {
     }
     subject.onNext(Object.assign(state, {
       semVertices: vertices,
-      semEdges: edges,
+      semEdges: edges
     }))
   })
 }
@@ -173,11 +180,11 @@ const load = (data) => {
   state.variableTypes = data.variableTypes.map((name) => ({
     name,
     color: variableTypeColor(name),
-    checked: true,
+    checked: true
   }))
   state.layers = data.layers.map((name) => ({
     name,
-    checked: true,
+    checked: true
   }))
   updateLayout()
 }
