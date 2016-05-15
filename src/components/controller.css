@@ -23,3 +23,11 @@
   cursor: pointer;
   width: 100%;
 }
+
+.controller select {
+  width: 100%;
+  height: 2.25em;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #000;
+}

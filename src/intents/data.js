@@ -1,7 +1,13 @@
-/* global FileReader */
-
 import Rx from 'rx'
-import { DATA_ADD_VARIABLE, DATA_LOAD, DATA_REMOVE_VARIABLE, DATA_SET_MODEL, DATA_TOGGLE_LAYER, DATA_TOGGLE_VARIABLE_TYPE, DATA_UPDATE_THRESHOLD,
+import {
+  DATA_ADD_VARIABLE,
+  DATA_CHANGE_BICLUSTERING_OPTION,
+  DATA_LOAD,
+  DATA_REMOVE_VARIABLE,
+  DATA_SET_MODEL,
+  DATA_TOGGLE_LAYER,
+  DATA_TOGGLE_VARIABLE_TYPE,
+  DATA_UPDATE_THRESHOLD
 } from '../constants'
 
 export const intentSubject = new Rx.Subject()
@@ -9,16 +15,23 @@ export const intentSubject = new Rx.Subject()
 export const addVariable = (u) => {
   intentSubject.onNext({
     type: DATA_ADD_VARIABLE,
-    u,
+    u
+  })
+}
+
+export const changeBiclusteringOption = (option) => {
+  intentSubject.onNext({
+    type: DATA_CHANGE_BICLUSTERING_OPTION,
+    option
   })
 }
 
 export const loadDataFromFile = (file) => {
-  const reader = new FileReader()
+  const reader = new window.FileReader()
   reader.onload = (event) => {
     intentSubject.onNext({
       type: DATA_LOAD,
-      data: JSON.parse(event.target.result),
+      data: JSON.parse(event.target.result)
     })
   }
   reader.readAsText(file)
@@ -27,7 +40,7 @@ export const loadDataFromFile = (file) => {
 export const removeVariable = (u) => {
   intentSubject.onNext({
     type: DATA_REMOVE_VARIABLE,
-    u,
+    u
   })
 }
 
@@ -35,27 +48,27 @@ export const setModel = (U, L) => {
   intentSubject.onNext({
     type: DATA_SET_MODEL,
     U,
-    L,
+    L
   })
 }
 
 export const toggleLayer = (name) => {
   intentSubject.onNext({
     type: DATA_TOGGLE_LAYER,
-    name,
+    name
   })
 }
 
 export const toggleVariableType = (name) => {
   intentSubject.onNext({
     type: DATA_TOGGLE_VARIABLE_TYPE,
-    name,
+    name
   })
 }
 
 export const updateRThreshold = (rThreshold) => {
   intentSubject.onNext({
     type: DATA_UPDATE_THRESHOLD,
-    rThreshold,
+    rThreshold
   })
 }

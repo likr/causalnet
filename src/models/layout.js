@@ -1,10 +1,8 @@
-/* global Worker */
-
 import Rx from 'rx'
 
-const layout = ({vertices, edges}, edgeConcentration = false) => {
+const layout = ({vertices, edges}, biclusteringOption) => {
   return Rx.Observable.create((observer) => {
-    const worker = new Worker('layout-worker.js')
+    const worker = new window.Worker('layout-worker.js')
     worker.onmessage = ({data}) => {
       const {vertices, edges, width, height} = data
       observer.onNext({vertices, edges, width, height})
@@ -14,10 +12,10 @@ const layout = ({vertices, edges}, edgeConcentration = false) => {
       vertices,
       edges,
       options: {
-        edgeConcentration,
+        biclusteringOption,
         layerMargin: 200,
-        vertexMargin: 5,
-      },
+        vertexMargin: 5
+      }
     })
     return () => {
       worker.terminate()

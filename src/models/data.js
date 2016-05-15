@@ -2,6 +2,7 @@ import d3 from 'd3'
 import Rx from 'rx'
 import {
   DATA_ADD_VARIABLE,
+  DATA_CHANGE_BICLUSTERING_OPTION,
   DATA_LOAD,
   DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
@@ -9,7 +10,9 @@ import {
   DATA_TOGGLE_VARIABLE_TYPE,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
-import { intentSubject } from '../intents/data'
+import {
+  intentSubject
+} from '../intents/data'
 import layout from './layout'
 import sem from './sem'
 
@@ -18,6 +21,7 @@ const variableTypeColor = d3.scale.category20()
 const subject = new Rx.Subject()
 const state = {
   rThreshold: 0.6,
+  biclusteringOption: 'none',
   layers: [],
   variableTypes: [],
   vertices: [],
@@ -62,9 +66,9 @@ const filterGraph = (data, rThreshold, variableTypes, layers) => {
 }
 
 const updateLayout = () => {
-  const {data, rThreshold, variableTypes, layers} = state
+  const {data, rThreshold, variableTypes, layers, biclusteringOption} = state
   const graph = filterGraph(data, rThreshold, variableTypes, layers)
-  layout(graph, true).subscribe(({vertices, edges}) => {
+  layout(graph, biclusteringOption).subscribe(({vertices, edges}) => {
     for (const vertex of vertices) {
       vertex.d.color = variableTypeColor(vertex.d.variableType)
     }
@@ -175,6 +179,11 @@ const addVariable = (u) => {
   calcSem(U, L)
 }
 
+const changeBiclusteringOption = (option) => {
+  state.biclusteringOption = option
+  updateLayout()
+}
+
 const load = (data) => {
   state.data = data
   state.variableTypes = data.variableTypes.map((name) => ({
@@ -228,6 +237,9 @@ intentSubject.subscribe((payload) => {
   switch (payload.type) {
     case DATA_ADD_VARIABLE:
       addVariable(payload.u)
+      break
+    case DATA_CHANGE_BICLUSTERING_OPTION:
+      changeBiclusteringOption(payload.option)
       break
     case DATA_LOAD:
       load(payload.data)

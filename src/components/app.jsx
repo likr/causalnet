@@ -17,6 +17,7 @@ class App extends React.Component {
       variableTypes: [],
       layers: [],
       rThreshold: 0,
+      biclusteringOption: 'none'
     }
   }
 
@@ -31,18 +32,18 @@ class App extends React.Component {
   }
 
   render () {
-    const {vertices, edges, semVertices, semEdges, semAttributes, variableTypes, layers, rThreshold} = this.state
+    const {vertices, edges, semVertices, semEdges, semAttributes, variableTypes, layers, rThreshold, biclusteringOption} = this.state
     return <div>
-             <div className={styles.networkDiagramWrapper}>
-               <NetworkDiagram vertices={vertices} edges={edges} />
-             </div>
-             <div className={styles.controllerWrapper}>
-               <Controller variableTypes={variableTypes} layers={layers} rThreshold={rThreshold} />
-             </div>
-             <div className={styles.semWrapper}>
-               <Sem vertices={semVertices} edges={semEdges} attributes={semAttributes} />
-             </div>
-           </div>
+      <div className={styles.networkDiagramWrapper}>
+        <NetworkDiagram vertices={vertices} edges={edges} />
+      </div>
+      <div className={styles.controllerWrapper}>
+        <Controller variableTypes={variableTypes} layers={layers} rThreshold={rThreshold} biclusteringOption={biclusteringOption} />
+      </div>
+      <div className={styles.semWrapper}>
+        <Sem vertices={semVertices} edges={semEdges} attributes={semAttributes} />
+      </div>
+    </div>
   }
 }
 

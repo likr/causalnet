@@ -4,6 +4,7 @@ import Graph from 'egraph/graph'
 import copy from 'egraph/graph/copy'
 import Layouter from 'egraph/layouter/sugiyama'
 import EdgeConcentrationTransformer from 'egraph/transformer/edge-concentration'
+import rectangular from 'egraph/transformer/edge-concentration/rectangular'
 import quasiBicliqueMining from 'egraph/transformer/edge-concentration/quasi-biclique-mining'
 import layerAssignment from '../utils/layer-assignment'
 
@@ -22,19 +23,28 @@ const edgeCount = (vertices, neighbors) => {
   return neighbors.filter((u) => vertices.indexOf(u) >= 0).length
 }
 
-const layout = (graph, {layerMargin, vertexMargin}) => {
+const transform = (graph, biclusteringOption) => {
+  if (biclusteringOption === 'none') {
+    return graph
+  }
   const transformer = new EdgeConcentrationTransformer()
     .layerAssignment(layerAssignment(graph))
     .idGenerator((graph) => Math.max(...graph.vertices()) + 1)
-    .method((graph, h1, h2) => quasiBicliqueMining(graph, h1, h2, 0.5))
     .dummy(() => ({
       dummy: true,
-      width: 0,
-      height: 0,
       name: '',
       color: '#888'
     }))
-  const transformedGraph = transformer.transform(copy(graph))
+  if (biclusteringOption === 'edge-concentration') {
+    transformer.method(rectangular)
+  } else if (biclusteringOption === 'quasi-bicliques') {
+    transformer.method((graph, h1, h2) => quasiBicliqueMining(graph, h1, h2, 0.5))
+  }
+  return transformer.transform(copy(graph))
+}
+
+const layout = (graph, {biclusteringOption, layerMargin, vertexMargin}) => {
+  const transformedGraph = transform(graph, biclusteringOption)
   const layouter = new Layouter()
     .layerAssignment(layerAssignment(transformedGraph))
     .layerMargin(layerMargin)
