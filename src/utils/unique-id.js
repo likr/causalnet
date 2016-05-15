@@ -1,13 +1,13 @@
-let nextId = 0;
+let nextId = 0
 
-const uniqueIds = new Map();
+const uniqueIds = new Map()
 
 const uniqueId = (u) => {
   if (uniqueIds.has(u)) {
-    return uniqueIds.get(u);
+    return uniqueIds.get(u)
   }
-  uniqueIds.set(u, nextId);
-  return nextId++;
-};
+  uniqueIds.set(u, nextId)
+  return nextId++
+}
 
 export default uniqueId

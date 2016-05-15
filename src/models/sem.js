@@ -17,16 +17,16 @@ const sem = (n, alpha, sigma, S, alphaFixed, sigmaFixed) => {
         alpha_fixed: alphaFixed,
         sigma_fixed: sigmaFixed,
       }),
-    });
+    })
     request.then((response) => response.json())
       .then((result) => {
-        observer.onNext(result);
-        observer.onCompleted();
-      });
+        observer.onNext(result)
+        observer.onCompleted()
+      })
 
     return () => {
-    };
-  });
-};
+    }
+  })
+}
 
 export default sem

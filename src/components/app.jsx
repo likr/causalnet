@@ -6,8 +6,8 @@ import Data from '../models/data.js'
 import styles from './app.css'
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       vertices: [],
       edges: [],
@@ -17,32 +17,32 @@ class App extends React.Component {
       variableTypes: [],
       layers: [],
       rThreshold: 0,
-    };
+    }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.dataSubscription = Data.subscribe((state) => {
-      this.setState(state);
-    });
+      this.setState(state)
+    })
   }
 
-  componentWillUnmount() {
-    this.dataSubscription.dispose();
+  componentWillUnmount () {
+    this.dataSubscription.dispose()
   }
 
-  render() {
-    const {vertices, edges, semVertices, semEdges, semAttributes, variableTypes, layers, rThreshold} = this.state;
+  render () {
+    const {vertices, edges, semVertices, semEdges, semAttributes, variableTypes, layers, rThreshold} = this.state
     return <div>
-      <div className={styles.networkDiagramWrapper}>
-        <NetworkDiagram vertices={vertices} edges={edges}/>
-      </div>
-      <div className={styles.controllerWrapper}>
-        <Controller variableTypes={variableTypes} layers={layers} rThreshold={rThreshold}/>
-      </div>
-      <div className={styles.semWrapper}>
-        <Sem vertices={semVertices} edges={semEdges} attributes={semAttributes}/>
-      </div>
-    </div>
+             <div className={styles.networkDiagramWrapper}>
+               <NetworkDiagram vertices={vertices} edges={edges} />
+             </div>
+             <div className={styles.controllerWrapper}>
+               <Controller variableTypes={variableTypes} layers={layers} rThreshold={rThreshold} />
+             </div>
+             <div className={styles.semWrapper}>
+               <Sem vertices={semVertices} edges={semEdges} attributes={semAttributes} />
+             </div>
+           </div>
   }
 }
 

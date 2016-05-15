@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-var path = require('path');
+var path = require('path')
 
 module.exports = {
   module: {
@@ -32,4 +32,4 @@ module.exports = {
     extensions: ['', '.js', '.jsx'],
   },
   devtool: '#inline-source-map',
-};
+}
