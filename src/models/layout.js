@@ -15,7 +15,7 @@ const layout = ({vertices, edges}, edgeConcentration=false) => {
       edges,
       options: {
         edgeConcentration,
-        layerMargin: 80,
+        layerMargin: 200,
         vertexMargin: 5,
       },
     });

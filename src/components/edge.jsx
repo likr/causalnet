@@ -27,15 +27,16 @@ class Edge extends React.Component {
   }
 
   render() {
+    const {width, opacity} = this.props;
     const {points0} = this.state;
     return (
       <g ref="edge">
         <path
           d={svgPath(points0)}
           fill="none"
-          opacity="0.3"
-          stroke="#000"
-          strokeWidth="2"/>
+          opacity={opacity}
+          stroke="#888"
+          strokeWidth={width}/>
       </g>
     );
   }
