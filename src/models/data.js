@@ -26,6 +26,8 @@ const state = {
   variableTypes: [],
   vertices: [],
   edges: [],
+  svgWidth: 0,
+  svgHeight: 0,
   semVertices: [],
   semEdges: [],
   semAttributes: [],
@@ -68,13 +70,15 @@ const filterGraph = (data, rThreshold, variableTypes, layers) => {
 const updateLayout = () => {
   const {data, rThreshold, variableTypes, layers, biclusteringOption} = state
   const graph = filterGraph(data, rThreshold, variableTypes, layers)
-  layout(graph, biclusteringOption).subscribe(({vertices, edges}) => {
+  layout(graph, biclusteringOption).subscribe(({vertices, edges, width, height}) => {
     for (const vertex of vertices) {
       vertex.d.color = variableTypeColor(vertex.d.variableType)
     }
     subject.onNext(Object.assign(state, {
       vertices,
-      edges
+      edges,
+      svgWidth: width,
+      svgHeight: height
     }))
   })
 }

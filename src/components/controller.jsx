@@ -22,6 +22,9 @@ class Controller extends React.Component {
           <button className='pure-button pure-button-primary' onClick={this.handleClickLoadButton.bind(this)}>
             Load
           </button>
+          <a ref='saveButton' className='pure-button' onClick={this.handleClickSaveButton.bind(this)}>
+            Save as SVG
+          </a>
         </div>
         <div>
           <h3>R threshold</h3>
@@ -49,6 +52,21 @@ class Controller extends React.Component {
 
   handleClickLoadButton () {
     loadDataFromFile(this.refs.file.files[0])
+  }
+
+  handleClickSaveButton (event) {
+    const svgNode = document.getElementById('main-svg').cloneNode(true)
+    svgNode.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+    svgNode.setAttribute('width', this.props.svgWidth)
+    svgNode.setAttribute('height', this.props.svgHeight)
+    svgNode.removeAttribute('data-reactid')
+    svgNode.querySelector('g').removeAttribute('transform')
+    for (const node of svgNode.querySelectorAll('*')) {
+      node.removeAttribute('data-reactid')
+    }
+    const svgData = window.btoa(encodeURIComponent(svgNode.outerHTML).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)))
+    this.refs.saveButton.href = `data:image/svg+xml;charset=utf-8;base64,${svgData}`
+    this.refs.saveButton.download = 'fig.svg'
   }
 
   handleChangeBiclusteringOption (event) {

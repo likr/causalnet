@@ -11,6 +11,8 @@ class App extends React.Component {
     this.state = {
       vertices: [],
       edges: [],
+      svgWidth: 0,
+      svgHeight: 0,
       semVertices: [],
       semEdges: [],
       semAttributes: [],
@@ -32,13 +34,31 @@ class App extends React.Component {
   }
 
   render () {
-    const {vertices, edges, semVertices, semEdges, semAttributes, variableTypes, layers, rThreshold, biclusteringOption} = this.state
+    const {
+      vertices,
+      edges,
+      svgWidth,
+      svgHeight,
+      semVertices,
+      semEdges,
+      semAttributes,
+      variableTypes,
+      layers,
+      rThreshold,
+      biclusteringOption
+    } = this.state
     return <div>
       <div className={styles.networkDiagramWrapper}>
         <NetworkDiagram vertices={vertices} edges={edges} />
       </div>
       <div className={styles.controllerWrapper}>
-        <Controller variableTypes={variableTypes} layers={layers} rThreshold={rThreshold} biclusteringOption={biclusteringOption} />
+        <Controller
+          variableTypes={variableTypes}
+          layers={layers}
+          rThreshold={rThreshold}
+          biclusteringOption={biclusteringOption}
+          svgWidth={svgWidth}
+          svgHeight={svgHeight} />
       </div>
       <div className={styles.semWrapper}>
         <Sem vertices={semVertices} edges={semEdges} attributes={semAttributes} />

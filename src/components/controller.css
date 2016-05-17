@@ -14,9 +14,11 @@
   margin-bottom: 1rem;
 }
 
-.controller button:global(.pure-button) {
+.controller :global(.pure-button) {
   width: 100%;
+  color: #fff;
   background-color: var(--primary-color);
+  margin-bottom: 1rem;
 }
 
 .controller input[type=range] {
