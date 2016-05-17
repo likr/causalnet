@@ -53,6 +53,7 @@ const layout = (graph, {biclusteringOption, layerMargin, vertexMargin}) => {
     .vertexMargin(vertexMargin)
     .edgeWidth(() => 3)
     .edgeMargin(3)
+    .edgeBundling(true)
   const positions = layouter.layout(transformedGraph)
 
   const vertices = []
