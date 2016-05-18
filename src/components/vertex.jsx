@@ -64,7 +64,7 @@ class Vertex extends React.Component {
       onMouseLeave={this.handleMouseLeave.bind(this)}
       style={{cursor: 'pointer'}}>
       <rect
-        fill='none'
+        fill='#fff'
         stroke={color}
         strokeWidth='2'
         width={width}
