@@ -37,7 +37,7 @@ class Vertex extends React.Component {
   render () {
     const {d, width, height} = this.props
     const {x0, y0} = this.state
-    const {name, color, dummy} = d
+    const {name, color, dummy, description} = d
     if (dummy) {
       return <g
         ref='vertex'
@@ -63,6 +63,7 @@ class Vertex extends React.Component {
       onMouseEnter={this.handleMouseEnter.bind(this)}
       onMouseLeave={this.handleMouseLeave.bind(this)}
       style={{cursor: 'pointer'}}>
+      <title>{description}</title>
       <rect
         fill='#fff'
         stroke={color}
