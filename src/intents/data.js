@@ -2,6 +2,8 @@ import Rx from 'rx'
 import {
   DATA_ADD_VARIABLE,
   DATA_CHANGE_BICLUSTERING_OPTION,
+  DATA_CLEAR_EDGE_HIGHLIGHT,
+  DATA_HIGHLIGHT_NEIGHBORS,
   DATA_LOAD,
   DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
@@ -23,6 +25,19 @@ export const changeBiclusteringOption = (option) => {
   intentSubject.onNext({
     type: DATA_CHANGE_BICLUSTERING_OPTION,
     option
+  })
+}
+
+export const clearEdgeHighlight = () => {
+  intentSubject.onNext({
+    type: DATA_CLEAR_EDGE_HIGHLIGHT
+  })
+}
+
+export const highlightNeighbors = (u) => {
+  intentSubject.onNext({
+    type: DATA_HIGHLIGHT_NEIGHBORS,
+    u
   })
 }
 

@@ -4,8 +4,7 @@ const layout = ({vertices, edges}, biclusteringOption) => {
   return Rx.Observable.create((observer) => {
     const worker = new window.Worker('layout-worker.js')
     worker.onmessage = ({data}) => {
-      const {vertices, edges, width, height} = data
-      observer.onNext({vertices, edges, width, height})
+      observer.onNext(data)
       observer.onCompleted()
     }
     worker.postMessage({

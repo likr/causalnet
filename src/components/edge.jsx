@@ -7,14 +7,14 @@ class Edge extends React.Component {
     super(props)
     const {points} = props
     this.state = {
-      points0: points,
+      points0: points
     }
   }
 
   componentWillReceiveProps () {
     const {points} = this.props
     this.setState({
-      points0: points,
+      points0: points
     })
   }
 
@@ -27,18 +27,16 @@ class Edge extends React.Component {
   }
 
   render () {
-    const {width, opacity} = this.props
+    const {width, opacity, highlighted} = this.props
     const {points0} = this.state
-    return (
-    <g ref="edge">
+    return <g ref='edge'>
       <path
         d={svgPath(points0)}
-        fill="none"
+        fill='none'
         opacity={opacity}
-        stroke="#888"
+        stroke={highlighted ? '#e30006' : '#888'}
         strokeWidth={width} />
     </g>
-    )
   }
 
   transition () {
@@ -48,7 +46,7 @@ class Edge extends React.Component {
       .transition()
       .duration(1000)
       .attr({
-        d: svgPath(points),
+        d: svgPath(points)
       })
   }
 }

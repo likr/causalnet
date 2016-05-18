@@ -3,6 +3,8 @@ import Rx from 'rx'
 import {
   DATA_ADD_VARIABLE,
   DATA_CHANGE_BICLUSTERING_OPTION,
+  DATA_CLEAR_EDGE_HIGHLIGHT,
+  DATA_HIGHLIGHT_NEIGHBORS,
   DATA_LOAD,
   DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
@@ -69,8 +71,8 @@ const filterGraph = (data, rThreshold, variableTypes, layers) => {
 
 const updateLayout = () => {
   const {data, rThreshold, variableTypes, layers, biclusteringOption} = state
-  const graph = filterGraph(data, rThreshold, variableTypes, layers)
-  layout(graph, biclusteringOption).subscribe(({vertices, edges, width, height}) => {
+  const filteredData = filterGraph(data, rThreshold, variableTypes, layers)
+  layout(filteredData, biclusteringOption).subscribe(({vertices, edges, width, height}) => {
     for (const vertex of vertices) {
       vertex.d.color = variableTypeColor(vertex.d.variableType)
     }
@@ -188,6 +190,22 @@ const changeBiclusteringOption = (option) => {
   updateLayout()
 }
 
+const clearEdgeHighlight = () => {
+  for (const edge of state.edges) {
+    edge.highlighted = false
+  }
+  subject.onNext(Object.assign(state))
+}
+
+const highlightNeighbors = (u) => {
+  for (const edge of state.edges) {
+    if (edge.u === u || edge.v === u) {
+      edge.highlighted = true
+    }
+  }
+  subject.onNext(Object.assign(state))
+}
+
 const load = (data) => {
   state.data = data
   state.variableTypes = data.variableTypes.map((name) => ({
@@ -244,6 +262,12 @@ intentSubject.subscribe((payload) => {
       break
     case DATA_CHANGE_BICLUSTERING_OPTION:
       changeBiclusteringOption(payload.option)
+      break
+    case DATA_CLEAR_EDGE_HIGHLIGHT:
+      clearEdgeHighlight()
+      break
+    case DATA_HIGHLIGHT_NEIGHBORS:
+      highlightNeighbors(payload.u)
       break
     case DATA_LOAD:
       load(payload.data)

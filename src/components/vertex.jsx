@@ -1,6 +1,11 @@
 import React from 'react'
 import d3 from 'd3'
-import {addVariable, setModel} from '../intents/data'
+import {
+  addVariable,
+  clearEdgeHighlight,
+  highlightNeighbors,
+  setModel
+} from '../intents/data'
 import TextImage from './text-image'
 
 class Vertex extends React.Component {
@@ -38,6 +43,8 @@ class Vertex extends React.Component {
         ref='vertex'
         transform={`translate(${x0},${y0})`}
         onClick={this.handleClickBundle.bind(this)}
+        onMouseEnter={this.handleMouseEnter.bind(this)}
+        onMouseLeave={this.handleMouseLeave.bind(this)}
         style={{cursor: 'pointer'}}>
         <rect
           fill='#000'
@@ -53,6 +60,8 @@ class Vertex extends React.Component {
       ref='vertex'
       transform={`translate(${x0},${y0})`}
       onClick={this.handleClickVariable.bind(this)}
+      onMouseEnter={this.handleMouseEnter.bind(this)}
+      onMouseLeave={this.handleMouseLeave.bind(this)}
       style={{cursor: 'pointer'}}>
       <rect
         fill='none'
@@ -65,6 +74,14 @@ class Vertex extends React.Component {
         rx='5' />
       <TextImage text={name} fontSize='10' fill={color} />
     </g>
+  }
+
+  handleMouseEnter (event) {
+    highlightNeighbors(this.props.u)
+  }
+
+  handleMouseLeave (event) {
+    clearEdgeHighlight()
   }
 
   handleClickVariable () {
