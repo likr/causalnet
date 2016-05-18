@@ -6,6 +6,7 @@ import Layouter from 'egraph/layouter/sugiyama'
 import EdgeConcentrationTransformer from 'egraph/transformer/edge-concentration'
 import rectangular from 'egraph/transformer/edge-concentration/rectangular'
 import quasiBicliqueMining from 'egraph/transformer/edge-concentration/quasi-biclique-mining'
+import completeQB from 'egraph/transformer/edge-concentration/complete-qb'
 import layerAssignment from '../utils/layer-assignment'
 
 const calcSize = (vertices) => {
@@ -35,10 +36,16 @@ const transform = (graph, biclusteringOption) => {
       name: '',
       color: '#888'
     }))
-  if (biclusteringOption === 'edge-concentration') {
-    transformer.method(rectangular)
-  } else if (biclusteringOption === 'quasi-bicliques') {
-    transformer.method((graph, h1, h2) => quasiBicliqueMining(graph, h1, h2, 0.5))
+  switch (biclusteringOption) {
+    case 'edge-concentration':
+      transformer.method(rectangular)
+      break
+    case 'quasi-bicliques':
+      transformer.method((graph, h1, h2) => quasiBicliqueMining(graph, h1, h2, 0.5))
+      break
+    case 'complete-quasi-bicliques':
+      transformer.method((graph, h1, h2) => completeQB(graph, h1, h2, 1, 3))
+      break
   }
   return transformer.transform(copy(graph))
 }
