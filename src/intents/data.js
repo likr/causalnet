@@ -7,6 +7,7 @@ import {
   DATA_LOAD,
   DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
+  DATA_TOGGLE_CELL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
   DATA_UPDATE_THRESHOLD
@@ -64,6 +65,13 @@ export const setModel = (U, L) => {
     type: DATA_SET_MODEL,
     U,
     L
+  })
+}
+
+export const toggleCell = (name) => {
+  intentSubject.onNext({
+    type: DATA_TOGGLE_CELL,
+    name
   })
 }
 

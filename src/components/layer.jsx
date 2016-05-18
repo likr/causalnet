@@ -6,9 +6,8 @@ class Layer extends React.Component {
   render () {
     const {name, checked} = this.props
     return <div className={styles.layer} onClick={this.handleClick.bind(this)}>
-             <input type='checkbox' checked={checked} readOnly />
-             {name}
-           </div>
+      <input type='checkbox' checked={checked} readOnly /> {name}
+    </div>
   }
 
   handleClick () {

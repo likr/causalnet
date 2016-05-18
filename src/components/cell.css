@@ -1,0 +1,8 @@
+.cell  {
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 3px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  background-color: var(--background-color);
+  color: #000;
+}

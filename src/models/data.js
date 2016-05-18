@@ -8,6 +8,7 @@ import {
   DATA_LOAD,
   DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
+  DATA_TOGGLE_CELL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
   DATA_UPDATE_THRESHOLD
@@ -26,6 +27,7 @@ const state = {
   biclusteringOption: 'none',
   layers: [],
   variableTypes: [],
+  cells: [],
   vertices: [],
   edges: [],
   svgWidth: 0,
@@ -37,7 +39,7 @@ const state = {
   L: []
 }
 
-const filterGraph = (data, rThreshold, variableTypes, layers) => {
+const filterGraph = (data, rThreshold, variableTypes, layers, cells) => {
   const usedVariableTypes = new Set()
   for (const variableType of variableTypes) {
     if (variableType.checked) {
@@ -50,14 +52,20 @@ const filterGraph = (data, rThreshold, variableTypes, layers) => {
       usedLayers.add(layer.name)
     }
   }
+  const usedCells = new Set()
+  for (const cell of cells) {
+    if (cell.checked) {
+      usedCells.add(cell.name)
+    }
+  }
 
   const vertexMap = new Map(data.vertices
-    .filter(({d}) => usedVariableTypes.has(d.variableType) && usedLayers.has(d.layer))
+    .filter(({d}) => usedVariableTypes.has(d.variableType) && usedLayers.has(d.layer) && d.cells.some((cell) => usedCells.has(cell)))
     .map(({u, d}) => [u, d]))
   const edges = data.edges.filter(({u, v, d}) => {
     const ud = vertexMap.get(u)
     const vd = vertexMap.get(v)
-    return ud && vd && ud.layer !== vd.layer && Math.abs(d.r) >= rThreshold
+    return ud && vd && ud.layer < vd.layer && Math.abs(d.r) >= rThreshold
   })
 
   const usedVertices = new Set()
@@ -70,8 +78,8 @@ const filterGraph = (data, rThreshold, variableTypes, layers) => {
 }
 
 const updateLayout = () => {
-  const {data, rThreshold, variableTypes, layers, biclusteringOption} = state
-  const filteredData = filterGraph(data, rThreshold, variableTypes, layers)
+  const {data, rThreshold, variableTypes, layers, cells, biclusteringOption} = state
+  const filteredData = filterGraph(data, rThreshold, variableTypes, layers, cells)
   layout(filteredData, biclusteringOption).subscribe(({vertices, edges, width, height}) => {
     for (const vertex of vertices) {
       vertex.d.color = variableTypeColor(vertex.d.variableType)
@@ -217,6 +225,10 @@ const load = (data) => {
     name,
     checked: true
   }))
+  state.cells = data.cells.map((name) => ({
+    name,
+    checked: true
+  }))
   updateLayout()
 }
 
@@ -232,19 +244,10 @@ const setModel = (U, L) => {
   calcSem(U, L)
 }
 
-const toggleLayer = (name) => {
-  for (const layer of state.layers) {
-    if (layer.name === name) {
-      layer.checked = !layer.checked
-    }
-  }
-  updateLayout()
-}
-
-const toggleVariableType = (name) => {
-  for (const variableType of state.variableTypes) {
-    if (variableType.name === name) {
-      variableType.checked = !variableType.checked
+const toggleItem = (items, name) => {
+  for (const item of items) {
+    if (item.name === name) {
+      item.checked = !item.checked
     }
   }
   updateLayout()
@@ -278,11 +281,14 @@ intentSubject.subscribe((payload) => {
     case DATA_SET_MODEL:
       setModel(payload.U, payload.L)
       break
+    case DATA_TOGGLE_CELL:
+      toggleItem(state.cells, payload.name)
+      break
     case DATA_TOGGLE_LAYER:
-      toggleLayer(payload.name)
+      toggleItem(state.layers, payload.name)
       break
     case DATA_TOGGLE_VARIABLE_TYPE:
-      toggleVariableType(payload.name)
+      toggleItem(state.variableTypes, payload.name)
       break
     case DATA_UPDATE_THRESHOLD:
       updateRThreshold(payload.rThreshold)

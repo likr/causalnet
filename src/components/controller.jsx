@@ -5,13 +5,14 @@ import {
 } from '../intents/data'
 import biclusteringOptions from '../biclustering-options'
 import RThresholdSlider from './r-threshold-slider'
+import Cell from './cell'
 import Layer from './layer'
 import VariableType from './variable-type'
 import styles from './controller.css'
 
 class Controller extends React.Component {
   render () {
-    const {variableTypes, layers, rThreshold} = this.props
+    const {variableTypes, layers, cells, rThreshold} = this.props
     return <div className={styles.controller}>
       <div>
         <h1>CausalNet</h1>
@@ -46,6 +47,10 @@ class Controller extends React.Component {
         <div>
           <h3>Layers</h3>
           {layers.map((d, i) => <Layer key={i} {...d} />)}
+        </div>
+        <div>
+          <h3>Cells</h3>
+          {cells.map((d, i) => <Cell key={i} {...d} />)}
         </div>
       </div>
     </div>

@@ -18,6 +18,7 @@ class App extends React.Component {
       semAttributes: [],
       variableTypes: [],
       layers: [],
+      cells: [],
       rThreshold: 0,
       biclusteringOption: 'none'
     }
@@ -44,6 +45,7 @@ class App extends React.Component {
       semAttributes,
       variableTypes,
       layers,
+      cells,
       rThreshold,
       biclusteringOption
     } = this.state
@@ -55,6 +57,7 @@ class App extends React.Component {
         <Controller
           variableTypes={variableTypes}
           layers={layers}
+          cells={cells}
           rThreshold={rThreshold}
           biclusteringOption={biclusteringOption}
           svgWidth={svgWidth}
