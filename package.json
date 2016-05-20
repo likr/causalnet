@@ -6,7 +6,7 @@
     "egraph": "^2.4.1",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
-    "rx": "^4.1.0"
+    "rxjs": "^5.0.0-beta.7"
   },
   "scripts": {
     "start": "webpack-dev-server --content-base app",

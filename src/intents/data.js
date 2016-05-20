@@ -1,9 +1,10 @@
-import Rx from 'rx'
+import Rx from 'rxjs/Rx'
 import {
   DATA_ADD_VARIABLE,
   DATA_CHANGE_BICLUSTERING_OPTION,
   DATA_CLEAR_EDGE_HIGHLIGHT,
   DATA_HIGHLIGHT_NEIGHBORS,
+  DATA_INIT,
   DATA_LOAD,
   DATA_REMOVE_VARIABLE,
   DATA_SET_MODEL,
@@ -14,30 +15,30 @@ import {
   DATA_UPDATE_THRESHOLD
 } from '../constants'
 
-export const intentSubject = new Rx.Subject()
+export const intentSubject = new Rx.BehaviorSubject({type: DATA_INIT})
 
 export const addVariable = (u) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_ADD_VARIABLE,
     u
   })
 }
 
 export const changeBiclusteringOption = (option) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_CHANGE_BICLUSTERING_OPTION,
     option
   })
 }
 
 export const clearEdgeHighlight = () => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_CLEAR_EDGE_HIGHLIGHT
   })
 }
 
 export const highlightNeighbors = (u) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_HIGHLIGHT_NEIGHBORS,
     u
   })
@@ -46,7 +47,7 @@ export const highlightNeighbors = (u) => {
 export const loadDataFromFile = (file) => {
   const reader = new window.FileReader()
   reader.onload = (event) => {
-    intentSubject.onNext({
+    intentSubject.next({
       type: DATA_LOAD,
       data: JSON.parse(event.target.result)
     })
@@ -55,14 +56,14 @@ export const loadDataFromFile = (file) => {
 }
 
 export const removeVariable = (u) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_REMOVE_VARIABLE,
     u
   })
 }
 
 export const setModel = (U, L) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_SET_MODEL,
     U,
     L
@@ -70,35 +71,35 @@ export const setModel = (U, L) => {
 }
 
 export const toggleCell = (name) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_TOGGLE_CELL,
     name
   })
 }
 
 export const toggleLayer = (name) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_TOGGLE_LAYER,
     name
   })
 }
 
 export const toggleVariableType = (name) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_TOGGLE_VARIABLE_TYPE,
     name
   })
 }
 
 export const toggleVertexSelection = (u) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_TOGGLE_VERTEX_SELECTION,
     u
   })
 }
 
 export const updateRThreshold = (rThreshold) => {
-  intentSubject.onNext({
+  intentSubject.next({
     type: DATA_UPDATE_THRESHOLD,
     rThreshold
   })

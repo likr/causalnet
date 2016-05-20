@@ -1,11 +1,11 @@
-import Rx from 'rx'
+import Rx from 'rxjs/Rx'
 
 const layout = ({vertices, edges}, biclusteringOption) => {
   return Rx.Observable.create((observer) => {
     const worker = new window.Worker('layout-worker.js')
     worker.onmessage = ({data}) => {
-      observer.onNext(data)
-      observer.onCompleted()
+      observer.next(data)
+      observer.complete()
     }
     worker.postMessage({
       vertices,

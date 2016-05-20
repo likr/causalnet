@@ -2,30 +2,16 @@ import React from 'react'
 import Controller from './controller'
 import NetworkDiagram from './network-diagram'
 import Sem from './sem'
-import Data from '../models/data.js'
 import styles from './app.css'
 
 class App extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      vertices: [],
-      edges: [],
-      svgWidth: 0,
-      svgHeight: 0,
-      semVertices: [],
-      semEdges: [],
-      semAttributes: [],
-      variableTypes: [],
-      layers: [],
-      cells: [],
-      rThreshold: 0,
-      biclusteringOption: 'none'
-    }
+    this.state = {}
   }
 
-  componentDidMount () {
-    this.dataSubscription = Data.subscribe((state) => {
+  componentWillMount () {
+    this.subscription = this.props.store.subscribe((state) => {
       this.setState(state)
     })
   }
@@ -36,35 +22,26 @@ class App extends React.Component {
 
   render () {
     const {
-      vertices,
-      edges,
-      svgWidth,
-      svgHeight,
-      semVertices,
-      semEdges,
-      semAttributes,
-      variableTypes,
-      layers,
-      cells,
-      rThreshold,
-      biclusteringOption
+      layout,
+      control,
+      sem
     } = this.state
     return <div>
       <div className={styles.networkDiagramWrapper}>
-        <NetworkDiagram vertices={vertices} edges={edges} />
+        <NetworkDiagram vertices={layout.vertices} edges={layout.edges} />
       </div>
       <div className={styles.controllerWrapper}>
         <Controller
-          variableTypes={variableTypes}
-          layers={layers}
-          cells={cells}
-          rThreshold={rThreshold}
-          biclusteringOption={biclusteringOption}
-          svgWidth={svgWidth}
-          svgHeight={svgHeight} />
+          variableTypes={control.variableTypes}
+          layers={control.layers}
+          cells={control.cells}
+          rThreshold={control.rThreshold}
+          biclusteringOption={control.biclusteringOption}
+          svgWidth={layout.width}
+          svgHeight={layout.height} />
       </div>
       <div className={styles.semWrapper}>
-        <Sem vertices={semVertices} edges={semEdges} attributes={semAttributes} />
+        <Sem vertices={sem.vertices} edges={sem.edges} attributes={sem.attributes} />
       </div>
     </div>
   }
