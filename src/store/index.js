@@ -3,6 +3,7 @@ import controlStore from './control-store'
 import selectionStore from './selection-store'
 import semStore from './sem-store'
 import dataStore from './data-store'
+import filterStore from './filter-store'
 import layoutStore from './layout-store'
 import graphStore from './graph-store'
 import {intentSubject} from '../intents/data'
@@ -12,7 +13,8 @@ const store = () => {
   const selectionSubject = selectionStore(intentSubject)
   const semSubject = semStore(intentSubject)
   const controlSubject = controlStore(intentSubject, dataSubject)
-  const layoutSubject = layoutStore(dataSubject, controlSubject)
+  const filterSubject = filterStore(intentSubject, selectionSubject)
+  const layoutSubject = layoutStore(dataSubject, controlSubject, filterSubject)
   const graphSubject = graphStore(layoutSubject, selectionSubject)
 
   return Rx.Observable

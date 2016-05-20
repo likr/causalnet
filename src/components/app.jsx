@@ -1,6 +1,8 @@
 import React from 'react'
 import {
-  clearVertexSelection
+  clearFilter,
+  clearVertexSelection,
+  filterVertices
 } from '../intents/data'
 import Controller from './controller'
 import NetworkDiagram from './network-diagram'
@@ -34,14 +36,14 @@ class App extends React.Component {
         <NetworkDiagram vertices={layout.vertices} edges={layout.edges} />
       </div>
       <div className={styles.actionButtons}>
-        <button className='pure-button' onClick={this.handleClickClearButton.bind(this)}>
-          Clear
+        <button className='pure-button' onClick={this.handleClickClearSelectionButton.bind(this)}>
+          Clear Selection
         </button>
         <button className='pure-button' onClick={this.handleClickFilterButton.bind(this)}>
           Filter
         </button>
-        <button className='pure-button' onClick={this.handleClickValidateButton.bind(this)}>
-          Validate
+        <button className='pure-button' onClick={this.handleClickClearFilterButton.bind(this)}>
+          Clear Filter
         </button>
       </div>
       <div className={styles.controllerWrapper}>
@@ -60,14 +62,16 @@ class App extends React.Component {
     </div>
   }
 
-  handleClickClearButton () {
+  handleClickClearSelectionButton () {
     clearVertexSelection()
   }
 
   handleClickFilterButton () {
+    filterVertices()
   }
 
-  handleClickValidateButton () {
+  handleClickClearFilterButton () {
+    clearFilter()
   }
 }
 

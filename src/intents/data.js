@@ -3,7 +3,9 @@ import {
   DATA_ADD_VARIABLE,
   DATA_CHANGE_BICLUSTERING_OPTION,
   DATA_CLEAR_EDGE_HIGHLIGHT,
+  DATA_CLEAR_FILTER,
   DATA_CLEAR_VERTEX_SELECTION,
+  DATA_FILTER_VERTICES,
   DATA_HIGHLIGHT_NEIGHBORS,
   DATA_INIT,
   DATA_LOAD,
@@ -38,9 +40,21 @@ export const clearEdgeHighlight = () => {
   })
 }
 
+export const clearFilter = () => {
+  intentSubject.next({
+    type: DATA_CLEAR_FILTER
+  })
+}
+
 export const clearVertexSelection = () => {
   intentSubject.next({
     type: DATA_CLEAR_VERTEX_SELECTION
+  })
+}
+
+export const filterVertices = () => {
+  intentSubject.next({
+    type: DATA_FILTER_VERTICES
   })
 }
 

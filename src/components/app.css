@@ -32,7 +32,7 @@
 }
 
 .actionButtons button {
-  width: 120px;
+  width: 150px;
   margin: 0 1rem;
   color: #fff;
   background-color: var(--primary-color);

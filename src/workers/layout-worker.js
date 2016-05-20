@@ -33,7 +33,7 @@ const transform = (graph, biclusteringOption) => {
   }
   const transformer = new EdgeConcentrationTransformer()
     .layerAssignment(layerAssignment(graph))
-    .idGenerator((graph) => Math.max(...graph.vertices()) + 1)
+    .idGenerator((graph, source, target) => `${Array.from(source).join(',')}:${Array.from(target).join(',')}`)
     .dummy(() => ({
       dummy: true,
       name: '',
@@ -59,8 +59,27 @@ const transform = (graph, biclusteringOption) => {
   return transformer.transform(copy(graph))
 }
 
-const layout = (graph, {biclusteringOption, layerMargin, vertexMargin}) => {
-  const transformedGraph = transform(graph, biclusteringOption)
+const filter = (graph, filteredVertices) => {
+  if (filteredVertices.size === 0) {
+    return graph
+  }
+  const vertices = new Set()
+  for (const [u, v] of graph.edges()) {
+    if (filteredVertices.has(u) || filteredVertices.has(v)) {
+      vertices.add(u)
+      vertices.add(v)
+    }
+  }
+  for (const u of graph.vertices()) {
+    if (!vertices.has(u)) {
+      graph.removeVertex(u)
+    }
+  }
+  return graph
+}
+
+const layout = (graph, {filteredVertices, biclusteringOption, layerMargin, vertexMargin}) => {
+  const transformedGraph = filter(transform(graph, biclusteringOption), filteredVertices)
   const layouter = new Layouter()
     .layerAssignment(layerAssignment(transformedGraph))
     .layerMargin(layerMargin)
@@ -117,6 +136,8 @@ onmessage = ({data}) => {
   for (const {u, v, d} of edges) {
     graph.addEdge(u, v, d)
   }
+
+  options.filteredVertices = new Set(options.filteredVertices)
 
   postMessage(layout(graph, options))
 }

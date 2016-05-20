@@ -42,7 +42,7 @@ const filterGraph = (vertices, edges, rThreshold, cells, layers, variableTypes) 
   }
 }
 
-const store = (dataSubject, controlSubject) => {
+const store = (dataSubject, controlSubject, filterSubject) => {
   const state = {
     vertices: [],
     edges: [],
@@ -52,17 +52,24 @@ const store = (dataSubject, controlSubject) => {
 
   const subject = new Rx.BehaviorSubject({state, changed: false})
 
-  Rx.Observable.zip(dataSubject, controlSubject)
-    .subscribe(([data, control]) => {
-      if (!data.changed && !control.changed) {
+  Rx.Observable.zip(dataSubject, controlSubject, filterSubject)
+    .subscribe(([data, control, filter]) => {
+      if (!data.changed && !control.changed && !filter.changed) {
         subject.next({state, changed: false})
         return
       }
 
       const {vertices, edges} = data.state
       const {rThreshold, cells, layers, variableTypes, biclusteringOption} = control.state
+      const {filteredVertices} = filter.state
       const graph = filterGraph(vertices, edges, rThreshold, cells, layers, variableTypes)
-      layout(graph, biclusteringOption).subscribe((result) => {
+      const options = {
+        filteredVertices: Array.from(filteredVertices),
+        biclusteringOption,
+        layerMargin: 200,
+        vertexMargin: 5
+      }
+      layout(graph, options).subscribe((result) => {
         Object.assign(state, result)
         subject.next({state, changed: true})
       })
