@@ -33,7 +33,7 @@ class Controller extends React.Component {
         </div>
         <div>
           <h3>Biclustering</h3>
-          <select value={this.props.biclusteringOption} onChange={this.handleChangeBiclusteringOption.bind(this)}>
+          <select defaultValue={this.props.biclusteringOption} onChange={this.handleChangeBiclusteringOption.bind(this)}>
             {Array.from(Object.keys(biclusteringOptions)).map((key) => {
               const {name, value} = biclusteringOptions[key]
               return <option key={value} value={value}>{name}</option>
