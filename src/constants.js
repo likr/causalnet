@@ -1,6 +1,7 @@
 export const DATA_ADD_VARIABLE = Symbol('data-add-variable')
 export const DATA_CHANGE_BICLUSTERING_OPTION = Symbol('data-change-biclustering-option')
 export const DATA_CLEAR_EDGE_HIGHLIGHT = Symbol('data-clear-edge-highligh')
+export const DATA_CLEAR_VERTEX_SELECTION = Symbol('data-clear-vertex-selection')
 export const DATA_HIGHLIGHT_NEIGHBORS = Symbol('data-highlight-neighbors')
 export const DATA_INIT = Symbol('data-init')
 export const DATA_LOAD = Symbol('data-load')

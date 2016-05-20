@@ -1,6 +1,7 @@
 import Rx from 'rxjs/Rx'
 import {
   DATA_CLEAR_EDGE_HIGHLIGHT,
+  DATA_CLEAR_VERTEX_SELECTION,
   DATA_HIGHLIGHT_NEIGHBORS,
   DATA_TOGGLE_VERTEX_SELECTION
 } from '../constants'
@@ -25,6 +26,10 @@ const store = (intentSubject) => {
     switch (payload.type) {
       case DATA_CLEAR_EDGE_HIGHLIGHT:
         state.highlightedVertices.clear()
+        subject.next({state, changed: true})
+        break
+      case DATA_CLEAR_VERTEX_SELECTION:
+        state.selectedVertices.clear()
         subject.next({state, changed: true})
         break
       case DATA_HIGHLIGHT_NEIGHBORS:

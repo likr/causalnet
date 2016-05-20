@@ -3,6 +3,7 @@ import {
   DATA_ADD_VARIABLE,
   DATA_CHANGE_BICLUSTERING_OPTION,
   DATA_CLEAR_EDGE_HIGHLIGHT,
+  DATA_CLEAR_VERTEX_SELECTION,
   DATA_HIGHLIGHT_NEIGHBORS,
   DATA_INIT,
   DATA_LOAD,
@@ -34,6 +35,12 @@ export const changeBiclusteringOption = (option) => {
 export const clearEdgeHighlight = () => {
   intentSubject.next({
     type: DATA_CLEAR_EDGE_HIGHLIGHT
+  })
+}
+
+export const clearVertexSelection = () => {
+  intentSubject.next({
+    type: DATA_CLEAR_VERTEX_SELECTION
   })
 }
 

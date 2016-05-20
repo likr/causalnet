@@ -23,3 +23,17 @@
   top: 0;
   bottom: 0;
 }
+
+.actionButtons {
+  position: absolute;
+  left: 300px;
+  bottom: 200px;
+  margin: 1rem;
+}
+
+.actionButtons button {
+  width: 120px;
+  margin: 0 1rem;
+  color: #fff;
+  background-color: var(--primary-color);
+}
