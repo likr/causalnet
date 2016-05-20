@@ -85,7 +85,7 @@ class Vertex extends React.Component {
   }
 
   handleClickVariable () {
-    toggleVertexSelection(this.props.u)
+    toggleVertexSelection(this.props.u, this.props.d.neighbors)
   }
 
   transition () {

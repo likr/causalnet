@@ -4,6 +4,7 @@ import {
   DATA_TOGGLE_CELL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
+  DATA_UPDATE_EPSILON,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
 
@@ -34,6 +35,7 @@ const toggleItem = (items, name) => {
 const store = (intentSubject, dataSubject) => {
   const state = {
     rThreshold: 0.6,
+    epsilon: 0.5,
     cells: [],
     layers: [],
     variableTypes: [],
@@ -62,6 +64,10 @@ const store = (intentSubject, dataSubject) => {
         break
       case DATA_TOGGLE_VARIABLE_TYPE:
         toggleItem(state.variableTypes, payload.name)
+        subject.next({state, changed: true})
+        break
+      case DATA_UPDATE_EPSILON:
+        state.epsilon = payload.value
         subject.next({state, changed: true})
         break
       case DATA_UPDATE_THRESHOLD:

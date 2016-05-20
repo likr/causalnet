@@ -15,6 +15,7 @@ import {
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
   DATA_TOGGLE_VERTEX_SELECTION,
+  DATA_UPDATE_EPSILON,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
 
@@ -112,10 +113,18 @@ export const toggleVariableType = (name) => {
   })
 }
 
-export const toggleVertexSelection = (u) => {
+export const toggleVertexSelection = (u, neighbors) => {
   intentSubject.next({
     type: DATA_TOGGLE_VERTEX_SELECTION,
-    u
+    u,
+    neighbors
+  })
+}
+
+export const updateEpsilon = (value) => {
+  intentSubject.next({
+    type: DATA_UPDATE_EPSILON,
+    value
   })
 }
 

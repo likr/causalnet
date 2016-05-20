@@ -60,14 +60,15 @@ const store = (dataSubject, controlSubject, filterSubject) => {
       }
 
       const {vertices, edges} = data.state
-      const {rThreshold, cells, layers, variableTypes, biclusteringOption} = control.state
+      const {rThreshold, cells, layers, variableTypes, biclusteringOption, epsilon} = control.state
       const {filteredVertices} = filter.state
       const graph = filterGraph(vertices, edges, rThreshold, cells, layers, variableTypes)
       const options = {
         filteredVertices: Array.from(filteredVertices),
         biclusteringOption,
         layerMargin: 200,
-        vertexMargin: 5
+        vertexMargin: 5,
+        epsilon
       }
       layout(graph, options).subscribe((result) => {
         Object.assign(state, result)

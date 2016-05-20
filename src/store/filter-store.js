@@ -20,6 +20,11 @@ const store = (intentSubject, selectionSubject) => {
           break
         case DATA_FILTER_VERTICES:
           state.filteredVertices = new Set(selection.state.selectedVertices)
+          for (const [u, count] of selection.state.selectedVertexNeighbors) {
+            if (count > 0) {
+              state.filteredVertices.add(u)
+            }
+          }
           subject.next({state, changed: true})
           break
         default:

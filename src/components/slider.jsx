@@ -1,10 +1,7 @@
 import React from 'react'
-import {
-  updateRThreshold
-} from '../intents/data'
-import styles from './r-threshold-slider.css'
+import styles from './slider.css'
 
-class RThresholdSlider extends React.Component {
+class Slider extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -25,7 +22,7 @@ class RThresholdSlider extends React.Component {
       })
     })
     this.refs.slider.addEventListener('change', (event) => {
-      updateRThreshold(+event.target.value)
+      this.props.onChange(+event.target.value)
     })
   }
 
@@ -46,4 +43,4 @@ class RThresholdSlider extends React.Component {
   }
 }
 
-export default RThresholdSlider
+export default Slider

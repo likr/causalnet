@@ -27,13 +27,27 @@ const edgeCount = (vertices, neighbors) => {
   return neighbors.filter((u) => vertices.indexOf(u) >= 0).length
 }
 
-const transform = (graph, biclusteringOption) => {
+const transform = (graph, options) => {
+  const {filteredVertices, biclusteringOption, epsilon} = options
+  if (filteredVertices.size > 0) {
+    for (const u of graph.vertices()) {
+      if (!filteredVertices.has(u)) {
+        graph.removeVertex(u)
+      }
+    }
+  }
   if (biclusteringOption === biclusteringOptions.NONE.value) {
     return graph
   }
   const transformer = new EdgeConcentrationTransformer()
     .layerAssignment(layerAssignment(graph))
-    .idGenerator((graph, source, target) => `${Array.from(source).join(',')}:${Array.from(target).join(',')}`)
+    .idGenerator((graph, source, target) => {
+      source = Array.from(source)
+      source.sort()
+      target = Array.from(target)
+      target.sort()
+      return `${source.join(',')}:${target.join(',')}`
+    })
     .dummy(() => ({
       dummy: true,
       name: '',
@@ -50,7 +64,7 @@ const transform = (graph, biclusteringOption) => {
       transformer.method(mbea)
       break
     case biclusteringOptions.QUASI_BICLIQUES.value:
-      transformer.method((graph, h1, h2) => quasiBicliqueMining(graph, h1, h2, 0.5))
+      transformer.method((graph, h1, h2) => quasiBicliqueMining(graph, h1, h2, epsilon))
       break
     case biclusteringOptions.COMPLETE_QUASI_BICLIQUES.value:
       transformer.method((graph, h1, h2) => completeQB(graph, h1, h2, 1, 3))
@@ -59,27 +73,9 @@ const transform = (graph, biclusteringOption) => {
   return transformer.transform(copy(graph))
 }
 
-const filter = (graph, filteredVertices) => {
-  if (filteredVertices.size === 0) {
-    return graph
-  }
-  const vertices = new Set()
-  for (const [u, v] of graph.edges()) {
-    if (filteredVertices.has(u) || filteredVertices.has(v)) {
-      vertices.add(u)
-      vertices.add(v)
-    }
-  }
-  for (const u of graph.vertices()) {
-    if (!vertices.has(u)) {
-      graph.removeVertex(u)
-    }
-  }
-  return graph
-}
-
-const layout = (graph, {filteredVertices, biclusteringOption, layerMargin, vertexMargin}) => {
-  const transformedGraph = filter(transform(graph, biclusteringOption), filteredVertices)
+const layout = (graph, options) => {
+  const {layerMargin, vertexMargin} = options
+  const transformedGraph = transform(graph, options)
   const layouter = new Layouter()
     .layerAssignment(layerAssignment(transformedGraph))
     .layerMargin(layerMargin)
@@ -94,6 +90,14 @@ const layout = (graph, {filteredVertices, biclusteringOption, layerMargin, verte
   const vertices = []
   for (const u of transformedGraph.vertices()) {
     const d = transformedGraph.vertex(u)
+    const neighbors = new Set()
+    for (const v of transformedGraph.inVertices(u)) {
+      neighbors.add(v)
+    }
+    for (const v of transformedGraph.outVertices(u)) {
+      neighbors.add(v)
+    }
+    d.neighbors = Array.from(neighbors)
     if (d.dummy) {
       d.U = transformedGraph.inVertices(u)
       d.L = transformedGraph.outVertices(u)
