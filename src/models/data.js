@@ -11,6 +11,7 @@ import {
   DATA_TOGGLE_CELL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
+  DATA_TOGGLE_VERTEX_SELECTION,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
 import {
@@ -253,6 +254,26 @@ const toggleItem = (items, name) => {
   updateLayout()
 }
 
+const toggleVertexSelection = (u) => {
+  const selected = new Set()
+  for (const vertex of state.vertices) {
+    if (vertex.u === u) {
+      vertex.selected = !vertex.selected
+    }
+    if (vertex.selected) {
+      selected.add(vertex.u)
+    }
+  }
+  for (const edge of state.edges) {
+    if (selected.has(edge.u) || selected.has(edge.v)) {
+      edge.selected = true
+    } else {
+      edge.selected = false
+    }
+  }
+  subject.onNext(Object.assign(state))
+}
+
 const updateRThreshold = (rThreshold) => {
   state.rThreshold = rThreshold
   updateLayout()
@@ -289,6 +310,9 @@ intentSubject.subscribe((payload) => {
       break
     case DATA_TOGGLE_VARIABLE_TYPE:
       toggleItem(state.variableTypes, payload.name)
+      break
+    case DATA_TOGGLE_VERTEX_SELECTION:
+      toggleVertexSelection(payload.u)
       break
     case DATA_UPDATE_THRESHOLD:
       updateRThreshold(payload.rThreshold)

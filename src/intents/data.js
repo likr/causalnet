@@ -10,6 +10,7 @@ import {
   DATA_TOGGLE_CELL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
+  DATA_TOGGLE_VERTEX_SELECTION,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
 
@@ -86,6 +87,13 @@ export const toggleVariableType = (name) => {
   intentSubject.onNext({
     type: DATA_TOGGLE_VARIABLE_TYPE,
     name
+  })
+}
+
+export const toggleVertexSelection = (u) => {
+  intentSubject.onNext({
+    type: DATA_TOGGLE_VERTEX_SELECTION,
+    u
   })
 }
 

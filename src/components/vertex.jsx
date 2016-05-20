@@ -1,10 +1,9 @@
 import React from 'react'
 import d3 from 'd3'
 import {
-  addVariable,
   clearEdgeHighlight,
   highlightNeighbors,
-  setModel
+  toggleVertexSelection
 } from '../intents/data'
 import TextImage from './text-image'
 
@@ -42,7 +41,7 @@ class Vertex extends React.Component {
       return <g
         ref='vertex'
         transform={`translate(${x0},${y0})`}
-        onClick={this.handleClickBundle.bind(this)}
+        onClick={this.handleClickVariable.bind(this)}
         onMouseEnter={this.handleMouseEnter.bind(this)}
         onMouseLeave={this.handleMouseLeave.bind(this)}
         style={{cursor: 'pointer'}}>
@@ -86,12 +85,7 @@ class Vertex extends React.Component {
   }
 
   handleClickVariable () {
-    addVariable(this.props.u)
-  }
-
-  handleClickBundle () {
-    const {U, L} = this.props.d
-    setModel(U, L)
+    toggleVertexSelection(this.props.u)
   }
 
   transition () {

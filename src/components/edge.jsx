@@ -27,14 +27,14 @@ class Edge extends React.Component {
   }
 
   render () {
-    const {width, opacity, highlighted} = this.props
+    const {width, opacity, selected, highlighted} = this.props
     const {points0} = this.state
     return <g ref='edge'>
       <path
         d={svgPath(points0)}
         fill='none'
         opacity={opacity}
-        stroke={highlighted ? '#e30006' : '#888'}
+        stroke={selected || highlighted ? '#e30006' : '#888'}
         strokeWidth={width} />
     </g>
   }
