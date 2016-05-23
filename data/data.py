@@ -3,62 +3,59 @@ import csv
 import json
 import numpy
 
-
-groups = {
-    '1 cell': 0,
-    '1-2 cell': 1,
-    '2 cell': 2,
-    '2 cell-4 cell': 3,
-    '4 cell': 4,
-    '4 cell-8 cell': 5,
-    '8 cell': 6
-}
-
-
-class Column(object):
-    def __init__(self, index, name, description, group, unit):
-        self.index = index
-        self.name = name
-        self.name_group = name.split('_')[0]
-        self.description = description
-        self.group = group
-        self.unit = unit
-
-    def to_dict(self):
-        return {
-            'index': self.index,
-            'name': self.name,
-            'nameGroup': self.name_group,
-            'description': self.description,
-            'group': self.group,
-            'groupOrder': groups[self.group],
-            'unit': self.unit
-        }
-
+layers = [
+    '1 cell',
+    '1-2 cell',
+    '2 cell',
+    '2-4 cell',
+    '4 cell',
+    '4-8 cell',
+    '8 cell',
+]
 
 def main():
-    columns = {row[1]: Column(*row) for row
-               in list(csv.reader(open('columns.csv')))[1:]}
-    data = list(csv.reader(open('data.csv')))
-    head, data = data[0][1:], data[1:]
-    data = numpy.array([[float(v) for v in row[1:]] for row in data])
-    print data.T, numpy.corrcoef(data.T)
-    r = numpy.corrcoef(data.T)
-    print len(columns), r.shape
+    variables = list(csv.reader(open('variables.csv')))[1:]
+    data = numpy.array([[float(val) if val else 0.0 for val in row[1:]] for row in csv.reader(open('data.csv'))])
+    coef = numpy.corrcoef(data.T)
+    cells = set()
+    variableTypes = set()
+    vertices = []
+    edges = []
+    for i, variable in enumerate(variables):
+        v_cells = variable[6].split()
+        for cell in v_cells:
+            cells.add(cell)
+        variableTypes.add(variable[5])
+        vertices.append({
+            'd': {
+                'index': variable[0],
+                'name': variable[1],
+                'description': variable[2],
+                'layer': variable[3],
+                'layerOrder': layers.index(variable[3]),
+                'unit': variable[4],
+                'variableType': variable[5],
+                'cells': v_cells,
+            },
+            'u': variable[0],
+        })
+        for j, variable2 in enumerate(variables):
+            edges.append({
+                'd': {
+                    'r': coef[i, j]
+                },
+                'u': variable[0],
+                'v': variable2[0],
+            })
 
-    graph = {
-        'vertices': [{'u': columns[l].index, 'd': columns[l].to_dict()}
-                     for l in head],
-        'edges': [{'u': columns[namei].index,
-                   'v': columns[namej].index, 'd': {'r': r[i][j]}}
-                  if groups[columns[namei].group] < groups[columns[namej].group] else
-                  {'v': columns[namei].index,
-                   'u': columns[namej].index, 'd': {'r': r[i][j]}}
-                  for i, namei in enumerate(head)
-                  for j, namej in enumerate(head)
-                  if i < j]
+    obj = {
+        'cells': sorted(list(cells)),
+        'edges': edges,
+        'layers': layers,
+        'variableTypes': sorted(list(variableTypes)),
+        'vertices': vertices,
     }
-    json.dump(graph, open('data.json', 'w'))
+    print(json.dumps(obj, sort_keys=True, indent=2))
 
 if __name__ == '__main__':
     main()
