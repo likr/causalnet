@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import {
   clearFilter,
   clearVertexSelection,
@@ -28,8 +29,7 @@ class App extends React.Component {
   render () {
     const {
       layout,
-      control,
-      sem
+      control
     } = this.state
     return <div>
       <div className={styles.networkDiagramWrapper}>
@@ -45,6 +45,9 @@ class App extends React.Component {
         <button className='pure-button' onClick={this.handleClickClearFilterButton.bind(this)}>
           Clear Filter
         </button>
+        <button className='pure-button' onClick={this.handleClickValidateModelButton.bind(this)}>
+          Validate
+        </button>
       </div>
       <div className={styles.controllerWrapper}>
         <Controller
@@ -56,9 +59,6 @@ class App extends React.Component {
           biclusteringOption={control.biclusteringOption}
           svgWidth={layout.width}
           svgHeight={layout.height} />
-      </div>
-      <div className={styles.semWrapper}>
-        <Sem vertices={sem.vertices} edges={sem.edges} attributes={sem.attributes} />
       </div>
     </div>
   }
@@ -73,6 +73,14 @@ class App extends React.Component {
 
   handleClickClearFilterButton () {
     clearFilter()
+  }
+
+  handleClickValidateModelButton () {
+    const {layout} = this.state
+    const subWindow = window.open('sem.html')
+    subWindow.addEventListener('load', () => {
+      ReactDOM.render(<Sem vertices={layout.vertices} edges={layout.edges} />, subWindow.document.getElementById('content'))
+    })
   }
 }
 

@@ -12,19 +12,17 @@ class SemEdge extends React.Component {
   render () {
     const {points, d} = this.props
     const {path} = d
-    return (
-    <g ref="edge">
+    return <g ref='edge'>
       <path
         d={svgPath(points)}
-        fill="none"
-        opacity="0.3"
+        fill='none'
+        opacity='0.3'
         stroke={path > 0 ? 'green' : 'red'}
-        strokeWidth="2" />
+        strokeWidth='2' />
       <g transform={textTranslate(points)}>
         <TextImage fontSize={10} text={path.toFixed(3)} />
       </g>
     </g>
-    )
   }
 }
 

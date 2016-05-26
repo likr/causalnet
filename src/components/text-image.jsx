@@ -1,8 +1,6 @@
-/* global document */
-
 import React from 'react'
 
-const size = 30
+const size = 10
 
 const createImage = (text, fillColor) => {
   const family = 'sans-serif'
@@ -18,7 +16,7 @@ const createImage = (text, fillColor) => {
   return {
     href: canvas.toDataURL('image/png'),
     width: canvas.width,
-    height: canvas.height,
+    height: canvas.height
   }
 }
 
@@ -28,15 +26,13 @@ class TextImage extends React.Component {
     const img = createImage(text, fill)
     const height = img.height * fontSize / size
     const width = img.width * fontSize / size
-    return (
-    <image
+    return <image
       xlinkHref={img.href}
       x={-width / 2}
       y={-height / 2}
       width={width}
       height={height}
-      {...this.props}/>
-    )
+      {...this.props} />
   }
 }
 

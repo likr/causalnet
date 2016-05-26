@@ -1,13 +1,11 @@
-/* global fetch */
-
-import Rx from 'rx'
+import Rx from 'rxjs/Rx'
 
 const sem = (n, alpha, sigma, S, alphaFixed, sigmaFixed) => {
   return Rx.Observable.create((observer) => {
-    const request = fetch('https://websem.herokuapp.com/sem', {
+    const request = window.fetch('https://websem.herokuapp.com/sem', {
       method: 'post',
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'application/json'
       },
       body: JSON.stringify({
         n,
@@ -15,13 +13,13 @@ const sem = (n, alpha, sigma, S, alphaFixed, sigmaFixed) => {
         sigma,
         S,
         alpha_fixed: alphaFixed,
-        sigma_fixed: sigmaFixed,
-      }),
+        sigma_fixed: sigmaFixed
+      })
     })
     request.then((response) => response.json())
       .then((result) => {
-        observer.onNext(result)
-        observer.onCompleted()
+        observer.next(result)
+        observer.complete()
       })
 
     return () => {

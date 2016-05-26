@@ -3,6 +3,8 @@ import csv
 import json
 import numpy
 
+VERSION = 3
+
 layers = [
     '1 cell',
     '1-2 cell',
@@ -36,6 +38,7 @@ def main():
                 'unit': variable[4],
                 'variableType': variable[5],
                 'cells': v_cells,
+                'data': list(data[:, i]),
             },
             'u': variable[0],
         })
@@ -53,6 +56,7 @@ def main():
         'edges': edges,
         'layers': layers,
         'variableTypes': sorted(list(variableTypes)),
+        'version': VERSION,
         'vertices': vertices,
     }
     print(json.dumps(obj, sort_keys=True, indent=2))
