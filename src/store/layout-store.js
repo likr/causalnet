@@ -27,7 +27,7 @@ const filterGraph = (vertices, edges, rThreshold, cells, layers, variableTypes) 
   const filteredEdges = edges.filter(({u, v, d}) => {
     const ud = vertexMap.get(u)
     const vd = vertexMap.get(v)
-    return ud && vd && ud.layer < vd.layer && Math.abs(d.r) >= rThreshold
+    return ud && vd && ud.layerOrder < vd.layerOrder && Math.abs(d.r) >= rThreshold
   })
 
   const usedVertices = new Set()
