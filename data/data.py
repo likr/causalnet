@@ -25,11 +25,14 @@ layers = [
     '8 cell | first',
 ]
 
+
 def main():
     variables = list(csv.reader(open('variables.csv')))[1:]
-    timepoint = {row[0]: '{} | {}'.format(row[1], row[2]) for row in csv.reader(open('timepoint.csv'))}
-    data = numpy.array([[float(val) if val else 0.0 for val in row[1:]] for row in csv.reader(open('data.csv'))])
-    coef = numpy.corrcoef(data.T)
+    timepoint = {row[0]: '{} | {}'.format(row[1], row[2])
+                 for row in csv.reader(open('timepoint.csv'))}
+    data = numpy.array([[float(val) if val else 0.0 for val in row[1:]]
+                        for row in csv.reader(open('data.csv'))])
+    # coef = numpy.corrcoef(data.T)
     cells = set()
     variableTypes = set()
     vertices = []
@@ -38,10 +41,10 @@ def main():
     for i, variable in enumerate(variables):
         if variable[1] not in timepoint:
             continue
-        v_cells = variable[6].split()
+        v_cells = variable[7].split()
         for cell in v_cells:
             cells.add(cell)
-        variableTypes.add(variable[5])
+        variableTypes.add(variable[6])
         vertices.append({
             'd': {
                 'index': variable[0],
@@ -49,8 +52,8 @@ def main():
                 'description': variable[2],
                 'layer': timepoint[variable[1]],
                 'layerOrder': layers.index(timepoint[variable[1]]),
-                'unit': variable[4],
-                'variableType': variable[5],
+                'unit': variable[5],
+                'variableType': variable[6],
                 'cells': v_cells,
                 'data': list(data[:, i]),
             },
@@ -65,9 +68,10 @@ def main():
         #         'u': variable[0],
         #         'v': variable2[0],
         #     })
-    paths = [list(row) for row in csv.reader(open('lasso.csv'))]
+    # paths = [list(row) for row in csv.reader(open('lasso.csv'))]
+    paths = [list(row) for row in csv.reader(open('baysian-lasso.csv'))]
     results = paths[0][1:]
-    for row in paths[2:]:
+    for row in paths[1:]:
         reason = '_'.join(row[0].split('_')[1:])
         for result, value in zip(results, row[1:]):
             if not value:
@@ -90,6 +94,7 @@ def main():
         'vertices': vertices,
     }
     print(json.dumps(obj, sort_keys=True, indent=2))
+
 
 if __name__ == '__main__':
     main()
