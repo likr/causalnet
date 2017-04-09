@@ -1,5 +1,5 @@
-app/bundle.js
-app/layout-worker.js
+public/bundle.js
+public/layout-worker.js
 deploy
 bower_components
 node_modules
