@@ -6,9 +6,9 @@ import styles from './cell.css'
 
 class Cell extends React.Component {
   render () {
-    const {name, checked} = this.props
+    const {name, checked, count} = this.props
     return <div className={styles.cell} onClick={this.handleClick.bind(this)}>
-      <input type='checkbox' checked={checked} readOnly /> {name}
+      <input type='checkbox' checked={checked} readOnly /> {name} ({count})
     </div>
   }
 

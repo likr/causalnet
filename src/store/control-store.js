@@ -11,15 +11,18 @@ import {
 const load = (state, data) => {
   state.cells = data.cells.map(({name}) => ({
     name,
+    count: data.vertices.filter(({d}) => d.cells.includes(name)).length,
     checked: true
   }))
   state.layers = data.layers.map(({name}) => ({
     name,
+    count: data.vertices.filter(({d}) => d.layer === name).length,
     checked: true
   }))
   state.variableTypes = data.variableTypes.map(({name, color}) => ({
     name,
     color,
+    count: data.vertices.filter(({d}) => d.variableType === name).length,
     checked: true
   }))
 }

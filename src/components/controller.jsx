@@ -20,7 +20,9 @@ class Controller extends React.Component {
       cells,
       rThreshold,
       epsilon,
-      biclusteringOption
+      biclusteringOption,
+      vertices,
+      edges
     } = this.props
     const options = []
     if (biclusteringOption === biclusteringOptions.QUASI_BICLIQUES.value) {
@@ -39,6 +41,11 @@ class Controller extends React.Component {
           <a ref='saveButton' className='pure-button' onClick={this.handleClickSaveButton.bind(this)}>
             Save as SVG
           </a>
+        </div>
+        <div>
+          <h3>Stats</h3>
+          <p>Number of vertices: {vertices.length}</p>
+          <p>Number of edges: {edges.length}</p>
         </div>
         <div>
           <h3>R threshold</h3>

@@ -57,6 +57,8 @@ class App extends React.Component {
           rThreshold={control.rThreshold}
           epsilon={control.epsilon}
           biclusteringOption={control.biclusteringOption}
+          vertices={layout.vertices}
+          edges={layout.edges}
           svgWidth={layout.width}
           svgHeight={layout.height} />
       </div>
