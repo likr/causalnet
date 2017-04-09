@@ -11,25 +11,25 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: ['es2015', 'stage-0'],
-          plugins: ['transform-react-jsx'],
-        },
+          plugins: ['transform-react-jsx']
+        }
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css?localIdentName=[path][name]---[local]---[hash:base64:5]&modules'],
-      },
-    ],
+        loaders: ['style', 'css?localIdentName=[path][name]---[local]---[hash:base64:5]&modules']
+      }
+    ]
   },
   entry: {
     bundle: './src/index',
-    'layout-worker': './src/workers/layout-worker',
+    'layout-worker': './src/workers/layout-worker'
   },
   output: {
-    path: path.join(__dirname, 'app'),
-    filename: '[name].js',
+    path: path.join(__dirname, 'public'),
+    filename: '[name].js'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['', '.js', '.jsx']
   },
-  devtool: '#inline-source-map',
+  devtool: '#inline-source-map'
 }
