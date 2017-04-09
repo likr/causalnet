@@ -66,7 +66,7 @@ const store = (dataSubject, controlSubject, filterSubject) => {
       const options = {
         filteredVertices: Array.from(filteredVertices),
         biclusteringOption,
-        layerMargin: 200,
+        layerMargin: 100,
         vertexMargin: 5,
         epsilon
       }
