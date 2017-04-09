@@ -14,11 +14,17 @@
   margin-bottom: 1rem;
 }
 
-.controller :global(.pure-button) {
+.mainButton {
   width: 100%;
   color: #fff;
   background-color: var(--primary-color);
   margin-bottom: 1rem;
+}
+
+.selectButton {
+  font-size: 70%;
+  margin-right: 0.5rem;
+  width: 100px;
 }
 
 .controller input[type=range] {

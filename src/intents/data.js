@@ -15,6 +15,12 @@ import {
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
   DATA_TOGGLE_VERTEX_SELECTION,
+  DATA_SELECT_ALL_CELLS,
+  DATA_UNSELECT_ALL_CELLS,
+  DATA_SELECT_ALL_LAYERS,
+  DATA_UNSELECT_ALL_LAYERS,
+  DATA_SELECT_ALL_VARIABLE_TYPES,
+  DATA_UNSELECT_ALL_VARIABLE_TYPES,
   DATA_UPDATE_EPSILON,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
@@ -118,6 +124,42 @@ export const toggleVertexSelection = (u, neighbors) => {
     type: DATA_TOGGLE_VERTEX_SELECTION,
     u,
     neighbors
+  })
+}
+
+export const selectAllCells = () => {
+  intentSubject.next({
+    type: DATA_SELECT_ALL_CELLS
+  })
+}
+
+export const unselectAllCells = () => {
+  intentSubject.next({
+    type: DATA_UNSELECT_ALL_CELLS
+  })
+}
+
+export const selectAllLayers = () => {
+  intentSubject.next({
+    type: DATA_SELECT_ALL_LAYERS
+  })
+}
+
+export const unselectAllLayers = () => {
+  intentSubject.next({
+    type: DATA_UNSELECT_ALL_LAYERS
+  })
+}
+
+export const selectAllVariableTypes = () => {
+  intentSubject.next({
+    type: DATA_SELECT_ALL_VARIABLE_TYPES
+  })
+}
+
+export const unselectAllVariableTypes = () => {
+  intentSubject.next({
+    type: DATA_UNSELECT_ALL_VARIABLE_TYPES
   })
 }
 

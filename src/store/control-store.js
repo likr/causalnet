@@ -4,6 +4,12 @@ import {
   DATA_TOGGLE_CELL,
   DATA_TOGGLE_LAYER,
   DATA_TOGGLE_VARIABLE_TYPE,
+  DATA_SELECT_ALL_CELLS,
+  DATA_UNSELECT_ALL_CELLS,
+  DATA_SELECT_ALL_LAYERS,
+  DATA_UNSELECT_ALL_LAYERS,
+  DATA_SELECT_ALL_VARIABLE_TYPES,
+  DATA_UNSELECT_ALL_VARIABLE_TYPES,
   DATA_UPDATE_EPSILON,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
@@ -32,6 +38,18 @@ const toggleItem = (items, name) => {
     if (item.name === name) {
       item.checked = !item.checked
     }
+  }
+}
+
+const selectAll = (items) => {
+  for (const item of items) {
+    item.checked = true
+  }
+}
+
+const unselectAll = (items) => {
+  for (const item of items) {
+    item.checked = false
   }
 }
 
@@ -67,6 +85,30 @@ const store = (intentSubject, dataSubject) => {
         break
       case DATA_TOGGLE_VARIABLE_TYPE:
         toggleItem(state.variableTypes, payload.name)
+        subject.next({state, changed: true})
+        break
+      case DATA_SELECT_ALL_CELLS:
+        selectAll(state.cells)
+        subject.next({state, changed: true})
+        break
+      case DATA_UNSELECT_ALL_CELLS:
+        unselectAll(state.cells)
+        subject.next({state, changed: true})
+        break
+      case DATA_SELECT_ALL_LAYERS:
+        selectAll(state.layers)
+        subject.next({state, changed: true})
+        break
+      case DATA_UNSELECT_ALL_LAYERS:
+        unselectAll(state.layers)
+        subject.next({state, changed: true})
+        break
+      case DATA_SELECT_ALL_VARIABLE_TYPES:
+        selectAll(state.variableTypes)
+        subject.next({state, changed: true})
+        break
+      case DATA_UNSELECT_ALL_VARIABLE_TYPES:
+        unselectAll(state.variableTypes)
         subject.next({state, changed: true})
         break
       case DATA_UPDATE_EPSILON:

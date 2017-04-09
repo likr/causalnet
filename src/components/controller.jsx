@@ -2,6 +2,12 @@ import React from 'react'
 import {
   loadDataFromFile,
   changeBiclusteringOption,
+  selectAllCells,
+  unselectAllCells,
+  selectAllLayers,
+  unselectAllLayers,
+  selectAllVariableTypes,
+  unselectAllVariableTypes,
   updateEpsilon,
   updateRThreshold
 } from '../intents/data'
@@ -35,10 +41,10 @@ class Controller extends React.Component {
           <div>
             <input ref='file' type='file' />
           </div>
-          <button className='pure-button pure-button-primary' onClick={this.handleClickLoadButton.bind(this)}>
+          <button className={`pure-button ${styles.mainButton}`} onClick={this.handleClickLoadButton.bind(this)}>
             Load
           </button>
-          <a ref='saveButton' className='pure-button' onClick={this.handleClickSaveButton.bind(this)}>
+          <a ref='saveButton' className={`pure-button ${styles.mainButton}`} onClick={this.handleClickSaveButton.bind(this)}>
             Save as SVG
           </a>
         </div>
@@ -63,14 +69,38 @@ class Controller extends React.Component {
         </div>
         <div>
           <h3>Variable Types</h3>
+          <div>
+            <button className={`pure-button ${styles.selectButton}`} onClick={this.handleClickSelectAllVariableTypesButton.bind(this)}>
+              Select All
+            </button>
+            <button className={`pure-button ${styles.selectButton}`} onClick={this.handleClickUnselectAllVariableTypesButton.bind(this)}>
+              Unselect All
+            </button>
+          </div>
           {variableTypes.map((d, i) => <VariableType key={i} {...d} />)}
         </div>
         <div>
           <h3>Layers</h3>
+          <div>
+            <button className={`pure-button ${styles.selectButton}`} onClick={this.handleClickSelectAllLayersButton.bind(this)}>
+              Select All
+            </button>
+            <button className={`pure-button ${styles.selectButton}`} onClick={this.handleClickUnselectAllLayersButton.bind(this)}>
+              Unselect All
+            </button>
+          </div>
           {layers.map((d, i) => <Layer key={i} {...d} />)}
         </div>
         <div>
           <h3>Cells</h3>
+          <div>
+            <button className={`pure-button ${styles.selectButton}`} onClick={this.handleClickSelectAllCellsButton.bind(this)}>
+              Select All
+            </button>
+            <button className={`pure-button ${styles.selectButton}`} onClick={this.handleClickUnselectAllCellsButton.bind(this)}>
+              Unselect All
+            </button>
+          </div>
           {cells.map((d, i) => <Cell key={i} {...d} />)}
         </div>
       </div>
@@ -102,6 +132,30 @@ class Controller extends React.Component {
 
   handleChangeRThreshold (value) {
     updateRThreshold(value)
+  }
+
+  handleClickSelectAllCellsButton () {
+    selectAllCells()
+  }
+
+  handleClickUnselectAllCellsButton () {
+    unselectAllCells()
+  }
+
+  handleClickSelectAllLayersButton () {
+    selectAllLayers()
+  }
+
+  handleClickUnselectAllLayersButton () {
+    unselectAllLayers()
+  }
+
+  handleClickSelectAllVariableTypesButton () {
+    selectAllVariableTypes()
+  }
+
+  handleClickUnselectAllVariableTypesButton () {
+    unselectAllVariableTypes()
   }
 }
 
