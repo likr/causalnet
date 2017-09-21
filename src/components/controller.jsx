@@ -28,7 +28,8 @@ class Controller extends React.Component {
       epsilon,
       biclusteringOption,
       vertices,
-      edges
+      edges,
+      texts
     } = this.props
     const options = []
     if (biclusteringOption === biclusteringOptions.QUASI_BICLIQUES.value) {
@@ -52,6 +53,7 @@ class Controller extends React.Component {
           <h3>Stats</h3>
           <p>Number of vertices: {vertices.length}</p>
           <p>Number of edges: {edges.length}</p>
+          <p>Number of articles: {texts.length}</p>
         </div>
         <div>
           <h3>R threshold</h3>

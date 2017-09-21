@@ -1,5 +1,6 @@
 public/bundle.js
 public/layout-worker.js
+public/wormbase.json
 deploy
 bower_components
 node_modules

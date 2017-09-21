@@ -3,3 +3,13 @@
   --background-color: #f3f9f9;
   --primary-color: #093799;
 }
+
+.highlight-text-cell {
+  color: red;
+  font-weight: bold;
+}
+
+.highlight-text-search-word {
+  color: blue;
+  font-weight: bold;
+}

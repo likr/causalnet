@@ -2,6 +2,7 @@ import Rx from 'rxjs/Rx'
 import controlStore from './control-store'
 import selectionStore from './selection-store'
 import semStore from './sem-store'
+import textStore from './text-store'
 import dataStore from './data-store'
 import filterStore from './filter-store'
 import layoutStore from './layout-store'
@@ -16,17 +17,20 @@ const store = () => {
   const filterSubject = filterStore(intentSubject, selectionSubject)
   const layoutSubject = layoutStore(dataSubject, controlSubject, filterSubject)
   const graphSubject = graphStore(layoutSubject, selectionSubject)
+  const textSubject = textStore(intentSubject, selectionSubject, graphSubject)
 
   return Rx.Observable
     .zip(
       graphSubject,
       controlSubject,
       semSubject,
-      (layout, control, sem) => {
+      textSubject,
+      (layout, control, sem, texts) => {
         return {
           layout: layout.state,
           control: control.state,
-          sem: sem.state
+          sem: sem.state,
+          texts: texts.state
         }
       }
     )
