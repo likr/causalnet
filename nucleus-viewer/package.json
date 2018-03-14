@@ -1,0 +1,44 @@
+{
+  "name": "bdml-viewer",
+  "description": "BDML viewer",
+  "version": "1.0.0",
+  "author": "Takao Naito <xarsh@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.0.5",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-html": "^4.0.2",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint": "^4.13.0",
+    "flood-fill": "^0.1.1",
+    "isosurface": "^1.0.0",
+    "jsonfile": "^4.0.0",
+    "lodash": "^4.17.5",
+    "ndarray": "^1.0.18",
+    "pixl-xml": "^1.0.13",
+    "uglifyjs-webpack-plugin": "^1.2.3",
+    "webpack-cli": "^2.0.9",
+    "webpack-dev-server": "^3.0.0",
+    "webpack": "^4.0.0"
+  }
+}
