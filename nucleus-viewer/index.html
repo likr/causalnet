@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>bdml-renderer</title>
+  </head>
+  <body style="margin: 0; color: white;">
+    <div id="app">
+      <div style="position: absolute; top: 0; left: 0;">
+        <select name="type">
+          <option disabled selected> -- select a cell -- </option>
+          <option>AB</option>
+          <option>ABa</option>
+          <option>ABal</option>
+          <option>ABala</option>
+          <option>ABalp</option>
+          <option>ABalpa</option>
+          <option>ABalpp</option>
+          <option>ABar</option>
+          <option>ABara</option>
+          <option>ABarp</option>
+          <option>ABp</option>
+          <option>ABpl</option>
+          <option>ABpla</option>
+          <option>ABplp</option>
+          <option>ABpr</option>
+          <option>ABpra</option>
+          <option>ABprp</option>
+          <option>C</option>
+          <option>E</option>
+          <option>EMS</option>
+          <option>Ea</option>
+          <option>Ep</option>
+          <option>MS</option>
+          <option>MSa</option>
+          <option>MSp</option>
+          <option>P0</option>
+          <option>P1</option>
+          <option>P2</option>
+          <option>P3</option>
+        </select>
+        <input id="time" type="range" value="0" min="0" max="99" style="vertical-align: middle">
+        <input id="auto" type="checkbox">
+        <label for="auto">Enable animation</label>
+        <p id="frame-counter"></p>
+      </div>
+    </div>
+    <script src="//cdn.jsdelivr.net/npm/three@0.90.0/build/three.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/three@0.90.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="./dist/build.js"></script>
+  </body>
+</html>
