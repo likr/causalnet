@@ -50,7 +50,7 @@
   margin: 1rem;
 }
 
-.actionButtons button {
+.actionButtons button, .actionButtons a {
   width: 150px;
   margin: 0 1rem;
   color: #fff;

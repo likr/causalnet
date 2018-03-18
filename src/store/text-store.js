@@ -26,7 +26,7 @@ const store = (intentSubject, selectionSubject, graphSubject) => {
   Rx.Observable.zip(intentSubject, selectionSubject, graphSubject).subscribe(([payload, selection, graph]) => {
     if (selection.changed) {
       const selectedVertexIds = selection.state.selectedVertices
-      state.selectedVertices = graph.state.vertices.filter(({u}) => selectedVertexIds.has(u))
+      state.selectedVertices = graph.state.vertices.filter(({u, d}) => selectedVertexIds.has(u) && d.cells)
       const selectedCells = new Set()
       for (const {d} of state.selectedVertices) {
         for (const cell of d.cells) {

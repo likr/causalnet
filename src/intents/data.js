@@ -73,15 +73,11 @@ export const highlightNeighbors = (u) => {
   })
 }
 
-export const loadDataFromFile = (file) => {
-  const reader = new window.FileReader()
-  reader.onload = (event) => {
-    intentSubject.next({
-      type: DATA_LOAD,
-      data: JSON.parse(event.target.result)
-    })
-  }
-  reader.readAsText(file)
+export const loadData = (query) => {
+  intentSubject.next({
+    type: DATA_LOAD,
+    query
+  })
 }
 
 export const removeVariable = (u) => {
