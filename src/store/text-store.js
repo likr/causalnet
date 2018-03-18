@@ -6,8 +6,9 @@ import {
 
 const filter = (texts, selectedVertices, searchWord) => {
   return texts.filter(({text}) => {
+    const words = text.replace(/[,.;]/, '').split(' ')
     return text.includes(searchWord) && selectedVertices.every((vertex) => {
-      return vertex.d.cells.some((cell) => text.includes(cell))
+      return vertex.d.cells.some((cell) => words.find((word) => word === cell))
     })
   })
 }
