@@ -95,11 +95,11 @@ const load = (state, data) => {
   })
 }
 
-const fetchFromDB = (query) => {
+const fetchFromDB = (query, user, password) => {
   const url = 'https://neo4j.likr-lab.com/db/data/transaction/commit'
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Basic ${window.btoa('neo4j:crest')}`
+    'Authorization': `Basic ${window.btoa(`${user}:${password}`)}`
   }
   return window
     .fetch(url, {
@@ -135,7 +135,7 @@ const store = (intentSubject) => {
   intentSubject.subscribe((payload) => {
     switch (payload.type) {
       case DATA_LOAD:
-        fetchFromDB(payload.query)
+        fetchFromDB(payload.query, payload.user, payload.password)
           .then((data) => {
             load(state, data)
             subject.next({state, changed: true})

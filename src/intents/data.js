@@ -73,10 +73,12 @@ export const highlightNeighbors = (u) => {
   })
 }
 
-export const loadData = (query) => {
+export const loadData = (query, user, password) => {
   intentSubject.next({
     type: DATA_LOAD,
-    query
+    query,
+    user,
+    password
   })
 }
 

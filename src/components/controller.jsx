@@ -19,7 +19,7 @@ import VariableType from './variable-type'
 import styles from './controller.css'
 
 const query = `MATCH (v1)-[r:Correlation]->(v2)
-WHERE abs(r.value) > 0.6 AND v1.timeOrder <= v2.timeOrder
+WHERE v1.timeOrder < v2.timeOrder
 RETURN collect(distinct(v1)), collect(r), collect(distinct(v2))`
 
 class Controller extends React.Component {
@@ -44,6 +44,8 @@ class Controller extends React.Component {
         <h1>CausalNet</h1>
         <div>
           <h3>Query</h3>
+          <input ref='user' type='text' defaultValue='neo4j' />
+          <input ref='password' type='password' />
           <textarea ref='query' rows='12' defaultValue={query} />
           <button className={`pure-button ${styles.mainButton}`} onClick={this.handleClickLoadButton.bind(this)}>
             Load
@@ -71,7 +73,7 @@ class Controller extends React.Component {
         </div>
         <div>
           <h3>Layout</h3>
-          <select defaultValue='FM3'>
+          <select defaultValue='sugiyama'>
             <option value='fm3'>FM3 Layout</option>
             <option value='sugiyama'>Sugiyama Layout</option>
             <option value='circular'>Circular Layout</option>
@@ -119,7 +121,9 @@ class Controller extends React.Component {
 
   handleClickLoadButton () {
     const query = this.refs.query.value
-    loadData(query)
+    const user = this.refs.user.value
+    const password = this.refs.password.value
+    loadData(query, user, password)
   }
 
   handleChangeBiclusteringOption (event) {
