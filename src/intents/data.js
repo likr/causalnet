@@ -22,6 +22,7 @@ import {
   DATA_SELECT_ALL_VARIABLE_TYPES,
   DATA_UNSELECT_ALL_VARIABLE_TYPES,
   DATA_UPDATE_EPSILON,
+  DATA_UPDATE_SEARCH_WORD,
   DATA_UPDATE_THRESHOLD
 } from '../constants'
 
@@ -167,6 +168,13 @@ export const updateEpsilon = (value) => {
   intentSubject.next({
     type: DATA_UPDATE_EPSILON,
     value
+  })
+}
+
+export const updateSearchWord = (searchWord) => {
+  intentSubject.next({
+    type: DATA_UPDATE_SEARCH_WORD,
+    searchWord
   })
 }
 
