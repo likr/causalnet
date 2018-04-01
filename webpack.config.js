@@ -1,22 +1,33 @@
-/* eslint-env node */
+const path = require('path')
 
-var path = require('path')
-
-module.exports = {
+const options = {
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'stage-0'],
-          plugins: ['transform-react-jsx']
-        }
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['env', 'react']
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css?localIdentName=[path][name]---[local]---[hash:base64:5]&modules']
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true
+            }
+          }
+        ]
       }
     ]
   },
@@ -29,7 +40,22 @@ module.exports = {
     filename: '[name].js'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   },
-  devtool: '#inline-source-map'
+  plugins: [
+  ],
+  devServer: {
+    contentBase: path.join(__dirname, 'public'),
+    historyApiFallback: true,
+    port: 8080
+  }
 }
+
+if (process.env.NODE_ENV === 'production') {
+} else {
+  Object.assign(options, {
+    devtool: 'inline-source-map'
+  })
+}
+
+module.exports = options
