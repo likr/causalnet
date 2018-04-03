@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {
   clearFilter,
   clearVertexSelection,
@@ -8,7 +7,6 @@ import {
 } from '../intents/data'
 import Controller from './controller'
 import NetworkDiagram from './network-diagram'
-import Sem from './sem'
 import styles from './app.css'
 
 const highlightText = (text, selectedCells, searchWord) => {
@@ -57,9 +55,12 @@ class App extends React.Component {
         <button className='pure-button' onClick={this.handleClickClearFilterButton.bind(this)}>
           Clear Filter
         </button>
-        <button className='pure-button' onClick={this.handleClickValidateModelButton.bind(this)}>
-          Validate
-        </button>
+        <a ref='exportButton' className='pure-button' onClick={this.handleClickExportButton.bind(this)}>
+          Export to iSEM
+        </a>
+        <a ref='saveButton' className='pure-button' onClick={this.handleClickSaveButton.bind(this)}>
+          Save as SVG
+        </a>
       </div>
       <div className={styles.searchForm}>
         <form className='pure-form' onSubmit={this.handleSubmitSearchWordForm.bind(this)} >
@@ -76,8 +77,6 @@ class App extends React.Component {
           biclusteringOption={control.biclusteringOption}
           vertices={layout.vertices}
           edges={layout.edges}
-          svgWidth={layout.width}
-          svgHeight={layout.height}
           texts={texts.texts}
         />
       </div>
@@ -118,12 +117,26 @@ class App extends React.Component {
     clearFilter()
   }
 
-  handleClickValidateModelButton () {
-    const {layout} = this.state
-    const subWindow = window.open('sem.html')
-    subWindow.addEventListener('load', () => {
-      ReactDOM.render(<Sem vertices={layout.vertices} edges={layout.edges} />, subWindow.document.getElementById('content'))
-    })
+  handleClickExportButton () {
+    const content = 'a,b,c'
+    const data = window.btoa(encodeURIComponent(content).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)))
+    this.refs.exportButton.href = `data:image/svg+xml;charset=utf-8;base64,${data}`
+    this.refs.exportButton.download = 'sem.csv'
+  }
+
+  handleClickSaveButton (event) {
+    const svgNode = document.getElementById('main-svg').cloneNode(true)
+    svgNode.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+    svgNode.setAttribute('width', this.state.layout.width)
+    svgNode.setAttribute('height', this.state.layout.height)
+    svgNode.removeAttribute('data-reactid')
+    svgNode.querySelector('g').removeAttribute('transform')
+    for (const node of svgNode.querySelectorAll('*')) {
+      node.removeAttribute('data-reactid')
+    }
+    const svgData = window.btoa(encodeURIComponent(svgNode.outerHTML).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)))
+    this.refs.saveButton.href = `data:image/svg+xml;charset=utf-8;base64,${svgData}`
+    this.refs.saveButton.download = 'fig.svg'
   }
 
   handleSubmitSearchWordForm (event) {

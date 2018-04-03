@@ -60,7 +60,7 @@ const store = (intentSubject, dataSubject) => {
     cells: [],
     layers: [],
     variableTypes: [],
-    biclusteringOption: 'none'
+    biclusteringOption: 'edge-concentration'
   }
 
   const subject = new Rx.BehaviorSubject({state, changed: false})

@@ -9,6 +9,24 @@
   padding: 1rem;
 }
 
+.controller input[type=text] {
+  color: #000;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.controller input[type=password] {
+  color: #000;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.controller textarea {
+  color: #000;
+  width: 100%;
+  resize: none;
+}
+
 .controller input[type=file] {
   width: 100%;
   margin-bottom: 1rem;

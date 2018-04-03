@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  loadDataFromFile,
+  loadData,
   changeBiclusteringOption,
   selectAllCells,
   unselectAllCells,
@@ -17,6 +17,10 @@ import Cell from './cell'
 import Layer from './layer'
 import VariableType from './variable-type'
 import styles from './controller.css'
+
+const query = `MATCH (v1)-[r:Correlation]->(v2)
+WHERE v1.timeOrder < v2.timeOrder
+RETURN collect(distinct(v1)), collect(r), collect(distinct(v2))`
 
 class Controller extends React.Component {
   render () {
@@ -39,15 +43,13 @@ class Controller extends React.Component {
       <div>
         <h1>CausalNet</h1>
         <div>
-          <div>
-            <input ref='file' type='file' />
-          </div>
+          <h3>Query</h3>
+          <input ref='user' type='text' defaultValue='neo4j' />
+          <input ref='password' type='password' />
+          <textarea ref='query' rows='12' defaultValue={query} />
           <button className={`pure-button ${styles.mainButton}`} onClick={this.handleClickLoadButton.bind(this)}>
             Load
           </button>
-          <a ref='saveButton' className={`pure-button ${styles.mainButton}`} onClick={this.handleClickSaveButton.bind(this)}>
-            Save as SVG
-          </a>
         </div>
         <div>
           <h3>Stats</h3>
@@ -68,6 +70,14 @@ class Controller extends React.Component {
             })}
           </select>
           {options}
+        </div>
+        <div>
+          <h3>Layout</h3>
+          <select defaultValue='sugiyama'>
+            <option value='fm3'>FM3 Layout</option>
+            <option value='sugiyama'>Sugiyama Layout</option>
+            <option value='circular'>Circular Layout</option>
+          </select>
         </div>
         <div>
           <h3>Variable Types</h3>
@@ -110,22 +120,10 @@ class Controller extends React.Component {
   }
 
   handleClickLoadButton () {
-    loadDataFromFile(this.refs.file.files[0])
-  }
-
-  handleClickSaveButton (event) {
-    const svgNode = document.getElementById('main-svg').cloneNode(true)
-    svgNode.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-    svgNode.setAttribute('width', this.props.svgWidth)
-    svgNode.setAttribute('height', this.props.svgHeight)
-    svgNode.removeAttribute('data-reactid')
-    svgNode.querySelector('g').removeAttribute('transform')
-    for (const node of svgNode.querySelectorAll('*')) {
-      node.removeAttribute('data-reactid')
-    }
-    const svgData = window.btoa(encodeURIComponent(svgNode.outerHTML).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)))
-    this.refs.saveButton.href = `data:image/svg+xml;charset=utf-8;base64,${svgData}`
-    this.refs.saveButton.download = 'fig.svg'
+    const query = this.refs.query.value
+    const user = this.refs.user.value
+    const password = this.refs.password.value
+    loadData(query, user, password)
   }
 
   handleChangeBiclusteringOption (event) {
