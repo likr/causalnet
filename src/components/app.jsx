@@ -15,6 +15,16 @@ const highlightText = (text, selectedCells, searchWord) => {
   }, searchWord ? text.replace(new RegExp(searchWord, 'g'), `<span class="highlight-text-search-word">${searchWord}</span>`) : text)
 }
 
+const exportData = (vertices) => {
+  const rows = []
+  rows.push(vertices.map(({d}) => d.name).join(','))
+  const n = vertices[0].d.data.length
+  for (let i = 0; i < n; ++i) {
+    rows.push(vertices.map(({d}) => d.data[i]).join(','))
+  }
+  return rows.join('\n')
+}
+
 class App extends React.Component {
   constructor (props) {
     super(props)
@@ -118,7 +128,11 @@ class App extends React.Component {
   }
 
   handleClickExportButton () {
-    const content = 'a,b,c'
+    const vertices = this.state.layout.vertices.filter(({d}) => !d.dummy)
+    if (vertices.length === 0) {
+      return
+    }
+    const content = exportData(vertices)
     const data = window.btoa(encodeURIComponent(content).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)))
     this.refs.exportButton.href = `data:image/svg+xml;charset=utf-8;base64,${data}`
     this.refs.exportButton.download = 'sem.csv'
